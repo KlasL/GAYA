@@ -1,0 +1,1 @@
+2024-09-27: G3PREP in G3_sub.f90 made obsolete; calculations should be made in G3GET to prepare state of the unit for period 1
