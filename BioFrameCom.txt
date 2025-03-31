@@ -1,0 +1,86 @@
+*BioFrameCom.txt
+LOG
+NPER 22,5,2.5
+GENMETHOD 3
+*
+FOUT "C:\Users\klluab\Documents\BioFrame2\SweFor5\Data\ForestAllToAIMMS.txt"
+FRES "C:\Users\klluab\Documents\BioFrame2\SweFor5\Data\FactorsToAIMMS.txt"
+CLASS 2017,2018
+*
+*FNEWF "C:\Users\jola\Dropbox\Jola\Applications\GAYA\G3\VB_basic\Seydlitz\Data\NewForTest.txt"
+FNEWF "C:\Users\klluab\Documents\BioFrame2\GAYA\BioFrame2\Data\NewForestNFI.txt"
+*FNEWF "C:\Users\jola\Dropbox\Jola\Applications\GAYA\G3\VB_basic\Seydlitz\Data\NFIHeurekaTest.txt"
+* New forest actions no. 2-9
+DEFA 2,IP,NF=1
+DEFA 3,IP,NF=2
+DEFA 4,IP,NF=3
+DEFA 5,IP,NF=4
+DEFA 6,IP,NF=5
+DEFA 7,IP,NF=6
+*DEFA 8,IP,NF=7
+*DEFA 9,IP,NF=8
+*DEFA 10,IP,NF=9
+*DEFA 11,IP,NF=10
+OKACT 2, TA=9.9,13.1*ST=0,100*SI=0,20.1*MO=0,2.1
+OKACT 3, TA=9.9,13.1*ST=0,100*SI=0,20.1*MO=2.2,99
+OKACT 4, TA=9.9,13.1*ST=0,100*SI=20.2,28.1*MO=0,2.1
+OKACT 5, TA=9.9,13.1*ST=0,100*SI=20.2,28.1*MO=2.2,99
+OKACT 6, TA=9.9,13.1*ST=0,100*SI=28.2,99*MO=0,2.1
+OKACT 7, TA=9.9,13.1*ST=0,100*SI=28.2,99*MO=2.2,99
+OKACT 8, TA=4.9,5.1*ST=0,10*SI=23,24.9
+OKACT 9, TA=4.9,5.1*ST=0,10*SI=25,26.9
+OKACT 10, TA=4.9,5.1*ST=0,10*SI=27,28.9
+OKACT 11, TA=4.9,5.1*ST=0,10*SI=29,31
+*
+VERS NoManagement
+DEFA 1,NM
+OKACT 1,TA=0,9.9 + HE=0.1,99 
+FFOREST
+FFOREST "C:\Users\klluab\Documents\BioFrame2\GAYA\BioFrame2\Data\NFI1422_input.csv"
+*FFOREST "C:\Users\jola\Dropbox\Jola\Applications\GAYA\G3\VB_basic\Seydlitz\Data\NFI1422test.csv"
+RUN
+STAT
+*STOP
+VERS Standard
+*
+FFOREST
+FFOREST "C:\Users\klluab\Documents\BioFrame2\GAYA\BioFrame2\Data\NFI1422_input.csv"
+*FFOREST "C:\Users\jola\Dropbox\Jola\Applications\GAYA\G3\VB_basic\Seydlitz\Data\NFI1422test.csv"
+*
+OKACT 1,TA=0,9.9 + HE=0.1,4 + TT=0,7 + &
+   HE=6,12*SD=0,0.7 + HE=14,99*SD=0,0.7 + HE=3,6*ST=1,2500*SD=0,0.7 + HE=11,14*ST=1,1600*SD=0,0.7 + &
+   HE=4,8*ST=1,9999*SD=0.7,1 + HE=8,13*ST=1,1600*SD=0.7,1 + HE=13,20*ST=1,1000*SD=0.7,1 + HE=20,30*ST=1,800*SD=0.7,1
+*** Röjning - ej lövskog
+DEFA 21,Cl,SA=2000,RD=0.8,SA(3)=100,RD(3)=1,SA(4)=100,RD(4)=1,SA(7)=100,RD(7)=1,SA(9)=100,RD(9)=1
+OKACT 21,HE=3,6*ST=2500,99999*SD=0,0.7
+**** Röjning av naturligt föryngrad björk
+DEFA 22,Cl,SA=1600,RD=0.8
+OKACT 22,HE=4,8*ST=1600,99999*SD=0.7,1
+*** Gallring ej lövskog
+DEFA 23,Th,SA=1200,RD=0.95,SA(3)=100,RD(3)=1,SA(4)=100,RD(4)=1,SA(7)=100,RD(7)=1,SA(9)=100,RD(9)=1
+OKACT 23, ST=1600,99999*HE=11,14*TP=7,999*SD=0,0.7
+DEFA 24,Th,TS=0.3,RD=1, &
+	TS(3)=0.9,RD(3)=1,TS(4)=0.9,RD(4)=1,TS(7)=0.9,RD(7)=1,TS(9)=0.9,RD(9)=1
+OKACT 24,LS=0,80*ST=900,3000*HE=16,26*TT=17,99*SD=0,0.7 + &
+    LS=80,999*ST=900,3000*HE=12,22*TT=22,99*SD=0,0.7
+** Gallring av förädlad björk och naturligt föryngrad björk
+DEFA 25,Th,SA=1000,RD=1
+OKACT 25, HE=8,13*ST=1010,2500*TP=7,999*TT=30,999*SD=0.7,1
+DEFA 26,Th,SA=600,RD=1
+OKACT 26, HE=13,20*ST=650,1600*TT=12,999*SD=0.7,1
+DEFA 27,Th,SA=600,RD=1
+OKACT 27, HE=20,99*ST=610,9999*TT=30,999*SD=0.7,1
+*** Slutavverkning - ej lövskog
+DEFA 28,FF,TS=1,RD=1
+OKACT 28,TA=50,999*LS=0,55*DI=15,999*TT=12,999*SD=0,0.7 + &
+    TA=71,999*LS=61,999*DI=15,999*TT=12,999*SD=0,0.7 + &
+    TA=81,999*LS=71,999*DI=15,999*TT=17,999*SD=0,0.7 + &
+    TA=91,999*LS=81,999*DI=14,999*TT=17,999*SD=0,0.7 + &
+    TA=101,999*LS=91,999*DI=14,999*TT=22,999*SD=0,0.7  
+*** Slutavverkning löv
+DEFA 29,FF,TS=1,RD=1
+OKACT 29,HE=20,99*TT=12,999*SD=0.7,1 
+*
+RUN
+STAT
+STOP
