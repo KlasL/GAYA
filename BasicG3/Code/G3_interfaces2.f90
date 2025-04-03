@@ -30,18 +30,18 @@ Module G3_interfaces
 	INTEGER :: NR,LREC,M,INDOM(NDOM),IERR,IEND
 	End subroutine
 !==========================================================================================
-	SUBROUTINE G3OUT(NR,M,IPER,IREC)
+     SUBROUTINE G3OUT(NR,M,IPER,IREC)
 ! USER SPECIFIC
 !***********************************************************************
-!  Rutin f”r utskrift av alternativ. Kallas efter  om IERR i denna
-!  rutin lika med 0.
+! Come here to compute the result of the projection made in G3FRAM
+! Here is the place for computing values such as cost and revenues 
+! given the treatments in NRATG  
 !
 !  PARAMETRAR:
-!     NR    = (in) logiskt nummer (”ppnas mot fil med kommandot FOUT)
-!     M     = (in) ordningsnummer p† best†nd/yta f”r vilket ber„kning
-!                  skett (svarar mot parameter M i rutin G3GET)
-!     IPER  = (in) sista perioden för vilken ber„kningar skett
-!     IREC  = (ut) antal records som skrivs ut i rutinen (normalt=1)
+!     NR    = (in) logical number of file opened with command FOUT
+!     M     = (in) recored being read in with routine G3GET
+!     IPER  = (in) the number of periods (1..NPER)
+!     IREC  = (ut) the number of records written (standard = 1; if error = 0)
 !***********************************************************************
 !-- GAYA-DEKLARATIONER
 	USE G3_Global
