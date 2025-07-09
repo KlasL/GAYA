@@ -236,7 +236,7 @@ SELECT CASE ( nr )
     GO TO 90
 END SELECT
 
-6     WRITE(*,*)' *** ERROR OPENING FILE:',namn
+6     WRITE(*,*)' *** ERROR OPENING FILE:',namn(1:nz)
 GO TO 1
 
 !-- FOUT ---------------------------------------------------------------

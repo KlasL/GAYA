@@ -98,6 +98,7 @@
 !-- TEST THAT TREATMENT IS ALLOWED
       IF(IG3CHK(IOKA1(1,ID),IOKA2(1,ID),IOKA3(1,ID),OKA(1,1,ID),IPER).EQ.0)THEN
         IERR=1
+!        write(*,*)"G3ATG: ",IPER,ID
         RETURN
       ENDIF
       NRATG(IPER)=ID
@@ -164,14 +165,16 @@
 						call Thin(ATG(:,i,ID),ARTin(:,i,IPER), Nx,Gx,RD,IERR)
 						if(IERR ==1)then
 							Nx=0.;Gx=0.
-						endif
+                        endif
+                        IERR = 0
 						ARTout(Ns,i,IPER)=ARTin(Ns,i,IPER)*(1.-Nx)
 						ARTout(Gs,i,IPER)=ARTin(Gs,i,IPER)*(1.-Gx)
 						ARTout(Vs,i,IPER)=ARTin(Vs,i,IPER)*(1.-Gx)
 					endif
 				enddo
 			endif
-		enddo
+        enddo
+    ! Come here to thin/clean the remaining stand with general treatment definition
 		ARTleft(Ns)=sum(ARTin(Ns,:,IPER),NoCUT(:)) + sum(ARTout(Ns,:,IPER))
 		ARTleft(Gs)=sum(ARTin(Gs,:,IPER),NoCUT(:)) + sum(ARTout(Gs,:,IPER))
 		ARTleft(Vs)=sum(ARTin(Vs,:,IPER),NoCUT(:)) + sum(ARTout(Vs,:,IPER))
@@ -183,20 +186,26 @@
           		RETURN
             endif
         endif
-		call Thin(ATG0,ARTleft, Nx,Gx,RD,IERR)
-        if(ATG(StrTh,0,ID)*ATG(UDrel,0,ID) == 0.)then
-        	Nx=Nx*ARTleft(Ns)/(sum(ARTin(Ns,:,IPER),NoCUT(:))+ 0.0001)
-        	Gx=Gx*ARTleft(Gs)/(sum(ARTin(Gs,:,IPER),NoCUT(:))+ 0.0001)
-            if(Nx > 1. .or. Gx > 1.) IERR=1
+        if(ATG0(StrTh)+ATG0(GaTh)+ATG0(UN)+ATG0(NaTh)+ATG0(UDrel) > 0.)then
+		    call Thin(ATG0,ARTleft, Nx,Gx,RD,IERR)
+            if(ATG(StrTh,0,ID)*ATG(UDrel,0,ID) == 0.)then
+        	    Nx=Nx*ARTleft(Ns)/(sum(ARTin(Ns,:,IPER),NoCUT(:))+ 0.0001)
+        	    Gx=Gx*ARTleft(Gs)/(sum(ARTin(Gs,:,IPER),NoCUT(:))+ 0.0001)
+                if(Nx > 1. .or. Gx > 1.) IERR=1
+            endif
+		    if(IERR ==1)RETURN
+        else
+            Nx = 0.
+            Gx =0.
         endif
-		if(IERR ==1)RETURN
 		DO I=1,MXSPECI
 			if(NoCUT(i))then
 				ARTout(Ns,i,IPER)=ARTin(Ns,i,IPER)*(1.-Nx)
 				ARTout(Gs,i,IPER)=ARTin(Gs,i,IPER)*(1.-Gx)
 				ARTout(Vs,i,IPER)=ARTin(Vs,i,IPER)*(1.-Gx)
 			endif
-		enddo
+        enddo
+    ! Summarize harvest
 		DO I=1,MXSPECI
 			CUT(UVs,I,IPER)=ARTin(Vs,I,IPER)-ARTout(Vs,I,IPER)
 			CUT(UNs,I,IPER)=ARTin(Ns,I,IPER)-ARTout(Ns,I,IPER)
@@ -204,7 +213,11 @@
 			CUT(UHs,I,IPER)=ARTin(Hs,I,IPER)
 			!+(ARTin(Hs,:,IPER)-ARTOut(Hs,:,IPER))/ &
 			!(G3DIA(ARTin(Gs),ARTin(Ns))-G3DIA(ARTin(Gs),ARTin(Ns))+0.001)*(D2-D1)
-		enddo
+        enddo
+        if(sum(CUT(UNs,:,IPER)) < 1.)then ! In case no designated species are cut
+            IERR =1
+		    RETURN
+        endif 
         ! Make final adjustments
 		DO I=1,MXSPECI
         	ARTout(Hs,i,IPER)=ARTin(Hs,i,IPER)
@@ -328,7 +341,8 @@
 !	8          x  x
 !   BERKNA UTTAGS-% P GRUNDYTA (Gx), STAMANTAL (Nx) OCH RELDIA (RD)
 
-	Gx=0.; Nx=0.; RD=0.
+	IERR = 0
+    Gx=0.; Nx=0.; RD=0.
 	if(ATG(StrTh) == 1)then						! "kalavverkning" enskilt trädslag
 		Gx=1
 		Nx=1.
@@ -369,7 +383,7 @@
 
     IERR=0
 	IF(MIN(Gx,Nx,RD).LE.0.0.OR.MAX(Gx,Nx,RD-1.).GT.1.)IERR=1
-
+    
 	RETURN
     END
     
