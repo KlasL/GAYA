@@ -45,7 +45,7 @@
 ! Qualities and transport (from 
         REAL ::	MinTimberLoad(MXSPECI), TransferToPulpwood(MXSPECI)
         DATA    MinTimberLoad/MXSPECI*20./
-        DATA	TransferToPulpwood/0.,0.,0.6,8*1.,0.1/
+        DATA	TransferToPulpwood/0.,0.,0.6,8*1.,0.1/  ! Vanlig björk utgångsantagande 0.6, känslighetsanalys 0.3;
 ! Biomass
 		REAL ::	StemToTScoar
         DATA    StemToTScoar/0.027/ ! Stems left on harvesting site
