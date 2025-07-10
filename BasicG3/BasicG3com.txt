@@ -1,0 +1,31 @@
+*BasicG3com.txt
+LOG
+NPER 10,2.5
+GENMETHOD 3
+FOUT "C:\Users\jola\Dropbox\Jola\Applications\GAYA\G3\VB_basic\VB_basic\Data\BasicG3Result.txt"
+*
+FNEWF "C:\Users\jola\Dropbox\Jola\Applications\GAYA\G3\VB_basic\VB_basic\Data\BasicG3NewForest.csv"
+CLASS 7,8
+*
+VERS 'Standard'
+FFOREST
+FFOREST "C:\Users\jola\Dropbox\Jola\Applications\GAYA\G3\VB_basic\VB_basic\Data\BasicG3Forest.txt"
+DEFA 1,NM
+OKACT 1,TA=0,4+ST=99,99999
+DEFA 2,Cl,SA=1500,RD=1
+OKACT 2,TA=10,16*ST=2000,99999*BA=0,99
+DEFA 3,FF,TS=1,RD=1
+OKACT 3,TA=40,99*ST=800,9999*BA=15,99
+DEFA 4,Th, TS=0.3,RD=1,SA(2)=10,RD(2)=0.8
+OKACT 4, TA=30,60*BA=1,16*ST=700,2000*TT=8,99
+DEFA 5,IP,NF=1
+DEFA 6,IP,NF=2
+DEFA 7,IP,NF=3
+OKACT 5, ST=0,100*TA=-1,6
+OKACT 6, ST=0,100*TA=-1,6
+OKACT 7, ST=0,100*HE=99,999
+*
+UNSKIP
+RUN
+STAT
+STOP
