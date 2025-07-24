@@ -1,0 +1,130 @@
+*C:/Users/jola/Projects/GAYA/SweFor6/ComSweFor6.txt
+LOG
+NPER 24,5,2.5
+GENMETHOD 3
+* FRUN(68); FOUT(65); FRES(70)
+FRUN C:/Users/jola/Dropbox/GIS_Data/SweFor/ForestBF2/UniqueNFI.txt
+FOUT C:/GAYAoutput/ForestAllToAIMMS.txt
+FRES C:/GAYAoutput/FactorsToAIMMS.txt
+*
+DEFA 1,NM
+FNEWF C:/Users/jola/Dropbox/Jola/Applications/GAYA/G3/VB_basic/Landscape/Data/NewForestFromHeureka.txt
+* New forest actions no. 2-6
+DEFA 2,IP,NF=1
+DEFA 3,IP,NF=2
+DEFA 4,IP,NF=3
+DEFA 5,IP,NF=4
+DEFA 6,IP,NF=5
+OKACT 2, TA=9.9,13.1*ST=0,100*I2=0.9,1.1
+OKACT 3, TA=9.9,13.1*ST=0,100*I2=1.9,2.1
+OKACT 4, TA=9.9,13.1*ST=0,100*I2=2.9,3.1
+OKACT 5, TA=9.9,13.1*ST=0,100*I2=3.9,4.1
+OKACT 6, TA=9.9,13.1*ST=0,100*I2=4.9,5.1
+*
+*--- No Management
+VERS No
+FFOREST 
+FFOREST C:/Users/jola/Dropbox/Jola/Projekt/BioFrame/NFIdata/NFI1422_input.csv
+OKACT 1,TA=0,9.9 + HE=0.1,99 
+RUN
+STAT
+*STOP
+*** Standard slutavverkning
+DEFA 31,FF,TS=1,RD=1
+OKACT 31,TA=50,999*LS=0,60*DI=15,999*TT=7,999*ST=0,2000 + &
+    TA=65,999*LS=61,70*DI=15,999*TT=7,999*ST=0,2000 + &
+    TA=75,999*LS=71,80*DI=15,999*TT=7,999*ST=0,2000 + &
+    TA=85,999*LS=81,90*DI=15,999*TT=7,999*ST=0,2000 + &
+    TA=95,999*LS=91,100*DI=15,999*TT=12,999*ST=0,2000 +&  
+    TA=105,999*LS=101,999*DI=15,999*TT=17,999*ST=0,2000
+*--- Standard even-aged
+VERS Sa
+*
+FFOREST
+FFOREST C:/Users/jola/Dropbox/Jola/Projekt/BioFrame/NFIdata/NFI1422_input.csv
+**** Standard låt stå
+OKACT 1,TA=0,9.9 + HE=0.1,3 + HE=6,99 + ST=1,2500
+*** Röjning - standard
+DEFA 11,Cl,SA=1600,RD=0.9,SA(3)=100,RD(3)=1,SA(5)=100,RD(5)=1,SA(7)=100,RD(7)=1,SA(9)=100,RD(9)=1
+OKACT 11,HE=3,6*ST=2500,99999*SD=0,0.7
+**** Röjning - stor lövdominans
+DEFA 12,Cl,SA=1600,RD=0.9
+OKACT 12,HE=3,6*ST=2500,99999*SD=0.7,1
+**** Gallring - standard
+DEFA 21,Th,TS=0.3,RD=1
+OKACT 21, ST=1200,3000*HE=15,26*DI=10,99*TT=27,999*PR=1,18
+RUN
+STAT
+STOP
+*
+*--- Standard adapted
+VERS Sb
+*
+FFOREST
+FFOREST C:/Users/jola/Dropbox/Jola/Projekt/BioFrame/NFIdata/NFI1422_input.csv
+DEFA 11
+DEFA 12
+DEFA 21
+**** Standard låt stå
+OKACT 1,TA=0,9.9 + HE=0.1,3 + HE=6,99*BA(2)=0,15 + ST=1,2500*BA(2)=0,15
+*** Röjning - standard (coniferous dominated)
+DEFA 14,Cl,SA=1600,RD=0.9
+OKACT 14,HE=3,6*ST=2500,99999*SD=0,0.3
+**** Röjning - anpassat
+DEFA 13,Cl,SA=1600,RD=0.9,SA(2)=100,RD(2)=1
+OKACT 13,HE=3,6*ST=2500,9999*SD=0.3,1
+**** Gallring - anpassat
+DEFA 22,Th,BA(2)=10,RD(2)=1,TS(1)=0.2,TS(3)=0.2,TS(5)=0.2,TS(7)=0.2,TS(9)=0.2, &
+    RD(1)=1,RD(3)=1,RD(5)=1,RD(7)=1,RD(9)=1
+OKACT 22, ST=800,9999*HE=16,26*TT=27,999 + BA(2)=15,99*HE=16,26
+*
+RUN
+STAT
+*STOP
+*
+*--- CCF
+DEFA 14
+DEFA 13
+DEFA 22
+DEFA 31
+*
+VERS C1
+FFOREST
+FFOREST C:/Users/jola/Dropbox/Jola/Projekt/BioFrame/NFIdata/NFI1422_input.csv
+*
+OKACT 1,BA(2)=0,20*HE=14,99*SS=0.7,1 + TT=0,22 + ST=0,350*TT=0,999 
+DEFA 41,Th,BA(2)=10,RD(2)=1, &
+	TS(1)=0.01,TS(3)=0.01,TS(5)=0.01,TS(7)=0.01,TS(9)=0.01, &
+    RD(1)=1.05,RD(3)=1.05,RD(5)=1.05,RD(7)=1.05,RD(9)=1.05
+OKACT 41,TT=22,37 + BA(2)=20,99
+RUN
+STAT
+*STOP
+*
+VERS C2
+FFOREST
+FFOREST C:/Users/jola/Dropbox/Jola/Projekt/BioFrame/NFIdata/NFI1422_input.csv
+*
+DEFA 41
+OKACT 1,BA(2)=0,15*HE=14,99*SS=0.3,0.7 + TT=0,22 + ST=0,350*TT=0,999 
+DEFA 42,Th,BA(2)=7.5,RD(2)=1, &
+	TS(1)=0.05,TS(3)=0.05,TS(5)=0.05,TS(7)=0.05,TS(9)=0.05, &
+    RD(1)=1.05,RD(3)=1.05,RD(5)=1.05,RD(7)=1.05,RD(9)=1.05
+OKACT 42,TT=22,37 + BA(2)=15,99
+RUN
+STAT
+*STOP
+*
+VERS C3
+FFOREST
+FFOREST C:/Users/jola/Dropbox/Jola/Projekt/BioFrame/NFIdata/NFI1422_input.csv
+*
+DEFA 42
+OKACT 1,BA(2)=0,10*HE=14,99*SS=0,0.3 + TT=0,22 + ST=0,350*TT=0,999 
+DEFA 43,Th, BA(2)=5,RD(2)=1,  &
+	TS(1)=0.05,TS(3)=0.05,TS(5)=0.05,TS(7)=0.05,TS(9)=0.05, &
+    RD(1)=1.05,RD(3)=1.05,RD(5)=1.05,RD(7)=1.05,RD(9)=1.05
+OKACT 43,TT=22,37 + BA(2)=10,99
+RUN
+STAT
+STOP
