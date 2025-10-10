@@ -54,7 +54,7 @@ save
     endif
 
 !-- Non stand values -------------------------------------------------
-     	IFIX(CCscenario) = 1	! Climate change scenario: 0 = No growth effect; 1 = B2; 2 = A2
+     	IFIX(CCscenario) = 0	! Climate change scenario: 0 = No growth effect; 1 = B2; 2 = A2
         IPER=1
 
 !-- INLŽSNING AV VŽRDEN ------------------------------------------------

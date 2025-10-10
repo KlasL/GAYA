@@ -61,7 +61,7 @@ implicit none
 		INTEGER	:: i,DomSpec,roj
 		REAL	:: GI(MXSPECI),SG(MXSPECI),SN(MXSPECI),IG(MXSPECI),IN(MXSPECI),		&
             HuCGYTVX,BPSJGGRY,gpb,rda,gpu,gpa,n2sj(6),xb,hd
-        REAL	:: VTVX,X,CCGROWTHEFFECT,VOLYM,GY,HEIGHTGROWTH,MORTPER5Y,GEFF
+        REAL	:: VTVX,X,CCGROWTHEFFECT,VOLYM,GY,HEIGHTGROWTH,MORTPER5Y,GEFF, ClimateEffect
         REAL	:: BREEDING,HojdYoung,DiaYoung,BPSJGALL,BPSJGFAS,G3VOL,G3YTA
         REAL	:: rMIXe,Atot,T13,Dia1,Dia2,GB,NB,VB,PinShare,SprShare,HeurekaHojd,A1
         REAL	:: TvxDiaFactor(MXSPECI),TvxHojdFactor(MXSPECI),YoungDiaFactor(MXSPECI),eps
@@ -130,6 +130,15 @@ SprShare = ART1(Gs,Spruce)/GB
       GI(I)=GI(I)*(1. + CCGrowthEffect(IFIX(CCscenario),IFIX(Zone),(IPER-1)*5,i) )
       GI(I)=GI(I)*TvxDiaFactor(i)**2
     enddo
+
+! Multiply with climate effect and growth adjustment, from (Per-Erik Wikberg,
+! Carina Josefson Ortiz, Miriam Markstroom och Mattias Lundblad. 2023.)
+
+    DO i = 1, MXSPECI
+        ! Apply the climate effect to the growth increment for each species
+        GI(i) = ClimateEffect(GI(i), 1)  ! Adjust growth for 5 year
+    END DO
+
 
 !-- Avg†ng faktisk utveckling ------------------------------------------
          x=(-1. + GB/BPSJGGRY(BEST1(TotAge),PinShare,SprShare,	&
