@@ -22,9 +22,9 @@ use g3_interfaces
 
 !-- LOCAL DEFINITIONS
 
-INTEGER*4 iatg(mxper),minnratg,m
+INTEGER*4 iatg(mxper),minnratg,m,maxout,mout
 CHARACTER (LEN=124) :: fname
-DATA m/0/
+DATA m/0/,maxout/5000/
 
 CALL  g3init
 
@@ -53,6 +53,7 @@ CALL  g3get(nrfil(3),lrsk,.true.,m,ndom,indom,ierr,iend)
 IF(iend == 1)GO TO 10
 IF(ierr == 1)GO TO 101
 nrin=nrin+1
+mout=0
 
 !-- GENERATE ALTERNATIVES WITH METHOD 3: COMPLETE ENUMERATION ----------------
 !-- GENERATE ALTERNATIVES WITH METHOD 1: ACCORDING TO IATAG(:) FROM G3GET ----
@@ -72,6 +73,8 @@ icont=1
 IF(ierr == 0)THEN
   CALL  g3out(nrfil(1),m,iper,irec)
   nrout=nrout+irec
+  mout=mout+1
+  if(mout >= maxout)GO TO 101
 END IF
 
 icont=iper

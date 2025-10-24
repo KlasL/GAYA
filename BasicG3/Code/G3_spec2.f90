@@ -12,7 +12,7 @@ INTEGER, PARAMETER :: MXVK1=MXVK+1	!
 INTEGER, PARAMETER :: MXDOM=50		! Max no. of domains (classes)
 INTEGER, PARAMETER :: MXSPECI=12	! Max no. of species
 INTEGER, PARAMETER :: NFIX=20       ! No. of elements in FIX and IFIX arrays
-INTEGER, PARAMETER :: NBEST=20      ! No. of elements in BESTin and BESTout arrays
+INTEGER, PARAMETER :: NBEST=40      ! No. of elements in BESTin and BESTout arrays
 INTEGER, PARAMETER :: NART=10       ! No. of elements in ARTin and ARTout arrays
 INTEGER, PARAMETER :: NCUT=4        ! No. of elements in CUT array
 INTEGER, PARAMETER :: NTREAT=10     ! No. of treatment parameters in ATG array
@@ -71,6 +71,10 @@ INTEGER ::	IAUTA1(MXVK1,MXATG)
 INTEGER ::	IAUTA2(MXVK1,MXATG)
 INTEGER ::	IAUTA3(MXVK1,MXATG)
 REAL ::		AUTA(2,MXVK,MXATG)
+INTEGER :: NOKA1(MXVK1,MXATG) 
+INTEGER :: NOKA2(MXVK1,MXATG) 
+INTEGER :: NOKA3(MXVK1,MXATG) 
+REAL :: NOKA(2,MXVK,MXATG) 
 
 END MODULE
 !----------------------------------------------------------------------
@@ -164,13 +168,13 @@ DATA Pine,Spruce,Birch,Aspen,Oak,Beech,SouthBrl,Contorta,OtherBrl,Larch,HybAsp,P
 
 ! CFIX (use StandID)
 ! IFIX
-INTEGER ::	StandID,Domain,Sapling,LocCli,Ftype,Peat,Ditch,Moist,Zone,CCscenario,Slope,Owner			
-DATA StandID,Domain,Sapling,LocCli,Ftype,Peat,Ditch,Moist,Zone,CCscenario,Slope,Owner	&
-	/1,2,3,4,5,6,7,8,9,10,11,12/
+INTEGER ::	StandID,Domain,Sapling,LocCli,Ftype,Peat,Ditch,Moist,Zone,CCscenario,Owner			
+DATA StandID,Domain,Sapling,LocCli,Ftype,Peat,Ditch,Moist,Zone,CCscenario,Owner	&
+	/1,2,3,4,5,6,7,8,9,10,11/
 ! FIX
-INTEGER ::		Area,Spar,Lat,ASL,Tsum,SI,mToRoad								
-DATA Area,Spar,Lat,ASL,Tsum,SI,mToRoad	&
-	/1,2,3,4,5,6,7/
+INTEGER ::		Area,Spar,Lat,ASL,Tsum,SI,mToRoad,Slope								
+DATA Area,Spar,Lat,ASL,Tsum,SI,mToRoad,Slope	&
+	/1,2,3,4,5,6,7,8/
 
 INTEGER ::  &               ! BEST
 	TotAge,		& ! 1
@@ -189,9 +193,12 @@ INTEGER ::  &               ! BEST
     SpDec,		& ! 16
     LSA,		& ! 17
     Geff1,		& ! 19
-    Geff2		 ! 20
-DATA TotAge,TimeTh,TimeCl,TimeFe,N,G,V,D,Hdom,PerFF,Mort,SpPin,SpSpr,SpDec,LSA,Geff1,Geff2	&
-	/1,2,3,4,5,6,7,8,9,10,13,14,15,16,17,19,20/
+    Geff2,		& ! 20
+    B1,B2,B3,B4,B5,B6,B7,B8,B9,B10,B11,B12 ! 21-32 species proportions
+DATA TotAge,TimeTh,TimeCl,TimeFe,N,G,V,D,Hdom,PerFF,Mort,SpPin,SpSpr,SpDec,LSA,Geff1,Geff2,	&
+    B1,B2,B3,B4,B5,B6,B7,B8,B9,B10,B11,B12 &
+	/1,2,3,4,5,6,7,8,9,10,13,14,15,16,17,19,20, &
+	21,22,23,24,25,26,27,28,29,30,31,32/
 
 INTEGER ::  &               ! ART
     Ns,     & ! 1

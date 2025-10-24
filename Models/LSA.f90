@@ -2,7 +2,7 @@ REAL function LSAfa(PoS,SIS,ART) result(LSAfax)
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 ! Minimum allowed final harvest age according to the Forestry Act
 !
-! PoS = part of Sweden (1-3)
+! PoS = part of Sweden (1-3) (1= n:a Sv, 2= m:a Sv, 3= s:a Sv)
 ! SIS = site index (m)
 ! ART = species data
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!

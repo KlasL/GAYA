@@ -162,7 +162,7 @@ INTEGER, INTENT(OUT)                     :: nr
 	INTEGER ::	ID,IPER,IERR
 	End subroutine
 !==========================================================================================
-      INTEGER FUNCTION IG3CHK(IXY1,IXY2,IXY3,XY,IPER)
+       LOGICAL FUNCTION IG3CHK(IXY1,IXY2,IXY3,XY,Assume,IPER)
 ! GAYA SPECIFIC      
 !***********************************************************************
 ! Investigates with Boolean algebra whether a condition is fullfille or not.
@@ -173,18 +173,20 @@ INTEGER, INTENT(OUT)                     :: nr
 ! BEST, FIX, IFIX, and VAR and PERIOD number.
 !
 !  PARAMETRAR OCH FUNKTIONSVŽRDE:
-!     IG3CHK = 1 => conditions fullfilled, else 0
+!     IG3CHK = true if condition is fullfilled, else false
 !     IXY1   = variabels whose value should be investigated
 !     IXY2   = connection with 1 for AND and 0 for OR
 !     IXY3   = species code; 0= variable in BEST; #0 = species in ART
 !     XY(1,.)= lower limit
 !     XY(2,.)= upper limit
+!      Assume = the condtion that is wanted to have then action accepted 
 !     IPER   = current period
 !***********************************************************************
 	USE G3_Global
 	USE G3_GAFRAM
 	INTEGER :: IXY1(MXVK1),IXY2(MXVK1),IXY3(MXVK1),IPER
 	REAL	:: XY(2,MXVK)
+    LOGICAL	:: Assume
 	End function
 !==========================================================================================
       REAL FUNCTION G3DIA(GRYTA,STAM)

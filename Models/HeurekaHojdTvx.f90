@@ -60,21 +60,21 @@ INTEGER	:: i
 REAL	:: A1,H1
 !
 INTEGER	:: j
-REAL	:: A2,dh,r,asi(7),beta(7),b2(7),Sp2Sp(MXSPECI)
+REAL	:: A2,dh,r,asi(7),beta(7),p2(7),Sp2Sp(MXSPECI)
 
 !       pine    spruce  birch   aspen   beech   oak larch
 DATA asi/ 25, 10, 7, 7, 15, 1000, 17.97 /
 DATA beta/ 7395.6, 1495.3, 394, 693.2, 4239.3, 8841.4, 1529 /
-DATA b2/ -1.7829, -1.5978, -1.387, -0.9771, -1.7753, -1.4317, -1.3451 /
+DATA p2/ -1.7829, -1.5978, -1.387, -0.9771, -1.7753, -1.4317, -1.3451 /
 
     ! Recode from common species order to species order of data here
     DATA Sp2Sp/ 1,	2,	3,	4,	6,	5,	3,	1,	3,	7,	4,	4 /
 
     j = Sp2Sp(i)
     A2 = A1+5.
-    dh = beta(j)*asi(j)**b2(j)
-    r  = SQRT( (H1-dh)**2 + 4.*beta(j)*H1*A1**b2(j) )
-    xHeurekaHojdx = (H1+dh+r)/( 2. + (4.*beta(j)*A2**b2(j))/(H1-dh+r) )
+    dh = beta(j)*asi(j)**p2(j)
+    r  = SQRT( (H1-dh)**2 + 4.*beta(j)*H1*A1**p2(j) )
+    xHeurekaHojdx = (H1+dh+r)/( 2. + (4.*beta(j)*A2**p2(j))/(H1-dh+r) )
 
     
 	RETURN
@@ -98,34 +98,34 @@ IMPLICIT NONE
     real	:: SIy,Atot
 
     integer	:: Sp2Sp(MXSPECI)
-	real	:: b0,b1,b2,Y0,Y1,SIx
+	real	:: p0,p1,p2,Y0,Y1,SIx
  ! Pine,Spruce,Birch,Aspen,Oak,Beech,SouthBrl,Contorta,OtherBrl,Larch,HybAsp,Poppel
    DATA Sp2Sp/ 1,	2,	3,	4,	5,	6,	7,	8,	9,	10,	11,	12 /
 
 	SIx=SIy				
-    b0=0.; b1=0.; b2=0.
+    p0=0.; p1=0.; p2=0.
     
 	if(i == Pine .or. i ==Contorta)then
 	    if(i == Contorta)SIx=0.888+1.336*SIx-0.0094*SIx**2
-		b0 =7.	
-	    b1=-0.57-0.05*SIx	
-    	b2= -0.28+0.0094*SIx	
+		p0 =7.	
+	    p1=-0.57-0.05*SIx	
+    	p2= -0.28+0.0094*SIx	
 	elseif(i == Spruce .or. i == Beech)then
 		if(i == Beech)SIx=7.4 + 0.755*SIx- 0.00268*SIx**2
-    	b0= 6.27+12.1/SIx	
-	    b1= -0.262-0.0575*SIx+0.00088*SIx**2	
-    	b2= -0.323-0.134*b1	
+    	p0= 6.27+12.1/SIx	
+	    p1= -0.262-0.0575*SIx+0.00088*SIx**2	
+    	p2= -0.323-0.134*p1	
 	elseif(i == Birch .or. i == Oak)then	
     	if(i == Oak)SIx=6.5+0.5*SIx
-		b0=  6.836+0.03165*SIx-0.002757*SIx**2	
-    	b1= -2.694+0.4937*b0-0.05331*b0**2		
+		p0=  6.836+0.03165*SIx-0.002757*SIx**2	
+    	p1= -2.694+0.4937*p0-0.05331*p0**2		
 	else	! Aspen and all other species as aspen 
-	    b0= 10.024-0.1664*SIx	
-    	b1=  -4.093+0.1605*SIx-0.0025*SIx**2		
+	    p0= 10.024-0.1664*SIx	
+    	p1=  -4.093+0.1605*SIx-0.0025*SIx**2		
 	endif
       
-	Y0=b0+b1*log(Atot)+b2*log(Atot)**2
-	Y1=b0+b1*log(Atot+5.)+b2*log(Atot+5.)**2
+	Y0=p0+p1*log(Atot)+p2*log(Atot)**2
+	Y1=p0+p1*log(Atot+5.)+p2*log(Atot+5.)**2
 	HojdYoung= SIx/(exp(Y1)+1.) - SIx/(exp(Y0)+1.)
 
 RETURN

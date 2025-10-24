@@ -46,9 +46,9 @@ INTEGER :: i,j,k
 
 !-- LOCAL DEFINITIONS
 REAL :: ta,tb,tused
-CHARACTER (LEN=11) :: com2(32)*11
-CHARACTER (LEN=352) :: comm*352
-CHARACTER (LEN=122) :: cvar
+CHARACTER (LEN=11) :: com2(33)*11
+CHARACTER (LEN=363) :: comm*363
+CHARACTER (LEN=155) :: cvar
 CHARACTER (LEN=23) :: catg
 CHARACTER (LEN=20) :: ctrt,chin*256,ch*10000,namn*256,ctemp*10
 
@@ -72,20 +72,21 @@ DATA com2(20)/'xxx        '/, com2(21)/'P1ACTION   '/,  &
     com2(26)/'STOP       '/, com2(27)/'STATISTICS '/,  &
     com2(28)/'CLASSACTIO '/, com2(29)/'YEARS      '/
 DATA com2(30)/'VERSION    '/, com2(31)/'SKIP       '/,  &
-     com2(32)/'UNSKIP     '/
+    com2(32)/'UNSKIP     '/, com2(33)/'NOACTION   '/ 
 DATA ctrt/'NM IP Cl Th Fe FT FF'/
 DATA catg/'TS BA SR SA RD FA FY NF'/
 !                   1  2  3  4  5  6  7  8  9 10 11 12
 DATA cvar( 1: 30)/'TA TT TP TF ST BA VO DI HE X1 '/		! BEST
 DATA cvar(31: 60)/'X2 X3 X4 SP SS SD LS X5 X6 X7 '/		! BEST
-DATA cvar(61: 96)/'I1 I2 I3 LC FT PE DH MO ZO I4 I5 I6 '/ 	! IFIX
-DATA cvar(97:122)/'F1 F2 LT AS TS SI F3 PR'/	! FIX + Period
+DATA cvar(61: 96)/'B1 B2 B3 B4 B5 B6 B7 B8 B9 BA BB BC '/		! BEST
+DATA cvar(97:132)/'I1 I2 I3 LC FT PE DH MO ZO I4 I5 I6 '/ 	! IFIX
+DATA cvar(133:155)/'F1 F2 LT AS TS SI F3 PR'/	! FIX + Period
 DATA nritot,nrotot,LOG,tused/4*0/
 
 !-- INITIERING
 IF(istart == 1)THEN
     j = 1
-    do i = 1,32
+    do i = 1,33
         do k = 1,11
             COMM(j:j) = com2(i)(k:k)
             j = j+1
@@ -115,6 +116,9 @@ IF(istart == 1)THEN
   ioka1    = 0
   ioka2    = 0
   ioka3    = 0
+  noka1    = 0
+  noka2    = 0
+  noka3    = 0
   iauta    = 0
   ioknf    = 0
   indom    = 0
@@ -146,7 +150,7 @@ IF(LOG == 1 .AND. iskip == 0)WRITE(*,*)trim(chin(1:))
 IF(chin(1:1) == '*')GO TO 1
 IF(icont == 0)THEN
   chin=adjustl(chin)
-  CALL  g3jfr(352,comm,INDEX(chin,' '),chin,nr)
+  CALL  g3jfr(363,comm,INDEX(chin,' '),chin,nr)
   IF(nr == 0)THEN
     WRITE(*,*)' *** NO DEFINED COMMAND: ', chin(1:INDEX(chin,' ')),' ***'
     GO TO 1
@@ -199,7 +203,7 @@ END IF
 IF(iskip == 1 .AND. nr /= 32)GO TO 1
 GO TO(      5,  5,  5,  5,  5, 5,  5,  5,  5,  &
     100,110,120,130,140,150,160,170,180,190,  &
-    200,210,220,230,240,250,260,270,280,290,300,310,320),nr
+    200,210,220,230,240,250,260,270,280,290,300,310,320,330),nr
 
 !***********************************************************************
 !********************* EXECUTION ***************************************
@@ -248,6 +252,7 @@ GO TO 1
 
 20    nfnew=0
 IF(nz == 0)GO TO 1
+read(nrfil( 2),*)	! Read header
 k=0
 21      k=k+1
 i=0
@@ -398,7 +403,7 @@ ELSE
   ioka3(nvk,k)=0
   i1=nk-2
 END IF
-CALL  g3jfr(122,cvar,2,ch(i1:i1+1),ioka1(nvk,k))
+CALL  g3jfr(155,cvar,2,ch(i1:i1+1),ioka1(nvk,k))
 IF(ioka1(nvk,k) <= 0)THEN
   WRITE(*,*)' OKATG - Wrong def. of variabel: ',ch(nk-2:nk-1)
   GO TO 260
@@ -456,7 +461,7 @@ ELSE
   ioknf3(nvk,k)=0
   i1=nk-2
 END IF
-CALL  g3jfr(122,cvar,2,ch(i1:i1+1),ioknf1(nvk,k))
+CALL  g3jfr(155,cvar,2,ch(i1:i1+1),ioknf1(nvk,k))
 IF(ioknf1(nvk,k) <= 0)THEN
   WRITE(*,*)' OKNYSK - Wrong def. of variabel: ',ch(nk-2:nk-1)
   GO TO 260
@@ -514,7 +519,7 @@ ELSE
   iauta3(nvk,k)=0
   i1=nk-2
 END IF
-CALL  g3jfr(122,cvar,2,ch(i1:i1+1),iauta1(nvk,k))
+CALL  g3jfr(155,cvar,2,ch(i1:i1+1),iauta1(nvk,k))
 IF(iauta1(nvk,k) <= 0)THEN
   WRITE(*,*)' AUTATG - Wrong def. of variabel: ',ch(nk-2:nk-1)
   GO TO 260
@@ -665,6 +670,65 @@ GO TO 1
 
 320   iskip = 0
 GO TO 1
+
+!-- NOATG --------------------------------------------------------------
+
+! TREATMENT NUMBER K
+330     READ(ch,*)k
+noka1(1:mxvk1,k)=0; noka2(1:mxvk1,k)=0
+nk=INDEX(ch,',')
+IF(nk == 0)THEN
+  WRITE(*,*)' OKATG - Wrong specification: ',trim(ch)
+  GO TO 260
+END IF
+nvk=0
+332     IF(INDEX(ch(nk+1:),'=') == 0)THEN
+  noka1(nvk+1,k)=0
+  GO TO 1
+END IF
+nk=nk+INDEX(ch(nk+1:),'=')
+! NEW CONDITION
+nvk=nvk+1
+IF(nvk > mxvk)THEN
+  WRITE(*,*)' OKATG - Too many conditions. Max is ',mxvk
+  GO TO 260
+END IF
+! VARIABLE AND (MAYBE) SPECIES
+IF(ch(nk-1:nk-1) == ')')THEN
+  i1=INDEX(ch(1:nk),'(',.true.)+1
+  ctemp=ch(i1:nk-2)
+  READ(ctemp,*)noka3(nvk,k)
+  i1=i1-3
+ELSE
+  noka3(nvk,k)=0
+  i1=nk-2
+END IF
+CALL  g3jfr(155,cvar,2,ch(i1:i1+1),noka1(nvk,k))
+IF(noka1(nvk,k) <= 0)THEN
+  WRITE(*,*)' OKATG - Wrong def. of variabel: ',ch(nk-2:nk-1)
+  GO TO 260
+END IF
+! CONNECTION TO NEXT CONDITION (* = AND; + = OR)
+IF(INDEX(ch(nk+1:),'*')+INDEX(ch(nk+1:),'+') == 0)THEN
+  i=nz-nk
+  noka2(nvk,k)=0
+ELSE IF(INDEX(ch(nk+1:),'*') == 0)THEN
+  i=INDEX(ch(nk+1:),'+')-1
+  noka2(nvk,k)=0
+ELSE IF(INDEX(ch(nk+1:),'+') == 0)THEN
+  i=INDEX(ch(nk+1:),'*')-1
+  noka2(nvk,k)=1
+ELSE IF(INDEX(ch(nk+1:),'+') < INDEX(ch(nk+1:),'*'))THEN
+  i=INDEX(ch(nk+1:),'+')-1
+  noka2(nvk,k)=0
+ELSE
+  i=INDEX(ch(nk+1:),'*')-1
+  noka2(nvk,k)=1
+END IF
+! LOWER AND UPPER BOND OF VARIABLE FOR CONDITION
+READ(ch(nk+1:nk+i),*)noka(1,nvk,k),noka(2,nvk,k)
+GO TO 332
+
 
 END SUBROUTINE g3comd
 

@@ -96,10 +96,10 @@
         INTEGER ::  IPER,ID,IERR
 
 !-- TEST THAT TREATMENT IS ALLOWED
-      IF(IG3CHK(IOKA1(1,ID),IOKA2(1,ID),IOKA3(1,ID),OKA(1,1,ID),IPER).EQ.0)THEN
-        IERR=1
-!        write(*,*)"G3ATG: ",IPER,ID
-        RETURN
+      IF( IG3CHK(IOKA1(1,ID),IOKA2(1,ID),IOKA3(1,ID),OKA(1,1,ID),.true.,IPER) == .false. )then
+        IERR=1; return
+      elseif ( IG3CHK(NOKA1(1,ID),NOKA2(1,ID),NOKA3(1,ID),NOKA(1,1,ID),.false.,IPER) == .true.)THEN
+        IERR=1; return
       ENDIF
       NRATG(IPER)=ID
 
@@ -233,13 +233,14 @@
     RETURN
     END
 
-      FUNCTION IG3CHK(IXY1,IXY2,IXY3,XY,IPER) result(IGxCHK)
+      FUNCTION IG3CHK(IXY1,IXY2,IXY3,XY,Assume,IPER) result(IGxCHK)
 !***********************************************************************
 !***********************************************************************
 	USE G3_Global
 	USE G3_GAFRAM
 	USE G3_interfaces
-	INTEGER :: IXY1(MXVK1),IXY2(MXVK1),IXY3(MXVK1),IPER,IGxCHK
+	INTEGER :: IXY1(MXVK1),IXY2(MXVK1),IXY3(MXVK1),IPER
+    logical :: Assume,IGxCHK
 	REAL	:: XY(2,MXVK)
 
 	INTEGER		V2A(22)
@@ -250,43 +251,44 @@
      			     7,99/
 !				    01,02,03,04,05,06,07,08,09,10,
 
-! BEST: 1-20; IFIX: 21-32; FIX: 33-40; PR:41
-      REAL*4 VAR(41)
+! BEST: 1-32; IFIX: 33-44; FIX: 45-51; PR:52
+      REAL*4 VAR(52)
 
 !-- BRING OVER VALUES TO VAR ------------------------------------------
 
-      DO I=1,20; VAR(I)=BESTin(I,IPER); ENDDO
-      DO I=21,32; VAR(I)=IFIX(I-20); ENDDO
-      DO I=33,39; VAR(I)=FIX(I-32); ENDDO
-      VAR(40)=IPER
+      DO I=1,32; VAR(I)=BESTin(I,IPER); ENDDO
+      DO I=33,44; VAR(I)=IFIX(I-32); ENDDO
+      DO I=45,51; VAR(I)=FIX(I-44); ENDDO
+      VAR(52)=IPER
 
 !-- CONTROL ON VAR AND ART --------------------------------------------
 
-      IGxCHK=1
+      IGxCHK=Assume     ! Assume = true for OCACTION, false for NOACTION
       IF(IXY1(1).EQ.0)RETURN
       I=0
-
-20    I=I+1
-	IF(IXY3(I).EQ.0)THEN
-        IF(VAR(IXY1(I)).LT.XY(1,I).OR.VAR(IXY1(I)).GT.XY(2,I))IGxCHK=0
+      IGxCHK=.true.
+        
+20  I=I+1
+    IF(IXY3(I).EQ.0)THEN
+        IF(VAR(IXY1(I)).LT.XY(1,I).OR.VAR(IXY1(I)).GT.XY(2,I))IGxCHK=.false.
 	ELSE
 		K=0
 		DO J=1,MXSPECI; IF(IXY3(I).EQ.J)K=J; ENDDO
 		IF(K.EQ.0)THEN
-			IGxCHK=0
+			IGxCHK=.false.
 		ELSE
             IF(ARTin(V2A(IXY1(I)),K,IPER).LT.XY(1,I).OR.    &
-     		   ARTin(V2A(IXY1(I)),K,IPER).GT.XY(2,I))IGxCHK=0
+     		   ARTin(V2A(IXY1(I)),K,IPER).GT.XY(2,I))IGxCHK=.false.
 		ENDIF
 	ENDIF
-      IF(IXY2(I).EQ.0)THEN
-		IF(IGxCHK.EQ.1)RETURN
+    IF(IXY2(I).EQ.0)THEN
+		IF(IGxCHK)RETURN
 		IF(IXY1(I+1).EQ.0)RETURN
-		IGxCHK=1
-      ENDIF
-      GO TO 20
+        IGxCHK = .true.
+    ENDIF
+    GO TO 20
 
-      END
+    END
 
 
       FUNCTION G3DIA(GRYTA,STAM) result(GxDia)
