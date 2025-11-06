@@ -105,6 +105,10 @@
                     Pulpwood = Pulpwood + Timber
                     Timber = 0.
                 endif
+                if(IATYP.EQ.Th .AND. i >= birch)then
+                    Pulpwood = Pulpwood + Timber
+                    Timber = 0.
+                endif
      			restim(I,IPER) = restim(I,IPER) + Timber
      			resmav(I,IPER) = resmav(I,IPER) + Pulpwood
 ! Costs                

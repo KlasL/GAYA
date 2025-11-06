@@ -38,7 +38,7 @@
         DATA CTRT/'"NM"', '"IP"', '"Cl"', '"Th"', '"Fe"', '"FT"', '"FF"'/
        logical	:: WriteTest,maxThinnings,Fertilization,Lodgepole,CCF,FirstWrite,ModelII
        integer  :: CurrAct(MXPER),FFn(MXPER),F0,F1
-       DATA	WriteTest/.false./,ModelII/.true./
+       DATA	WriteTest/.false./,ModelII/.false./
 
 ! Biomass
         REAL :: TSbiom(mxper), TScoar(mxper), TSfine(mxper), ResStm(mxper), ResRot(mxper)
@@ -266,13 +266,14 @@ do t=1,2
 
     ! Forest info for further analysis        
             if(FirstWrite)write(NR,'(99a)')	&
-        'Plot,Prog,Periods,NRatg,Treatm,', &
+        'Plot,Prog,VariableName,Periods,NRatg,Treatm,', &
         'SCost,Hcost,Fcost,Rcost,Age,m3Vol,m3Pin,m3Spr,m3Bir,m3Nob,m3Ovr,m3Hyb,m3dec,', &
         'Hgv,Dgv,Stems,LSA,m3Harv,TSbiom,', &
         'TScoar,TSfine,M3skMort,', &
         'SIS'
-                write (Cout, '(1x, 5(G,","), 19(F10.1,","),3(F10.3,","),F4.0)') &
+                write (Cout, '(1x, 6(G,","), 19(F10.1,","),3(F10.3,","),F4.0)') &
                 CFIX(StandID), &
+                jNr, &
                 jNr, &
                 iiper, &
                 nratg(iiper), &
