@@ -10,6 +10,10 @@ REAL	:: B1,CCGE100
 
 CCGrowthEffectx = 0.0
 if( Scenario == 0 )return
+if( Scenario == -1 )then
+  CCGrowthEffectx = -0.08
+  return
+endif
 
 B1 = min( 2020. + 80., 2020. + Year )
 

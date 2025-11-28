@@ -45,12 +45,13 @@
 ! Qualities and transport (from 
         REAL ::	MinTimberLoad(MXSPECI), TransferToPulpwood(MXSPECI)
         DATA    MinTimberLoad/MXSPECI*20./
-        data    TransferToPulpwood/0.,0.,10*0.3/
+        data    TransferToPulpwood/0.,0.,10*0.1/
 ! Biomass
 		REAL ::	StemToTScoar
         DATA    StemToTScoar/0.027/ ! Stems left on harvesting site
 ! Start
       DATA     ISTART/1/
+
 
       
 
@@ -105,7 +106,7 @@
                     Pulpwood = Pulpwood + Timber
                     Timber = 0.
                 endif
-                if(IATYP.EQ.Th .AND. i >= birch)then
+                if(IATYP.EQ.Th .AND. i >= birch .OR. IATYP == FF .AND. i == oak .AND. IPER == 1)then
                     Pulpwood = Pulpwood + Timber
                     Timber = 0.
                 endif
@@ -176,7 +177,7 @@
       REAL*4 OUT(4)
       INTEGER :: ITS
       REAL :: mmin(3),tmin(3)
-      DATA mmin/5.,5.,5./, tmin/12.,12.,18./ ! minsta massavedsdiameter och timmerdiameter
+      DATA mmin/5.,5.,5./, tmin/12.,12.,12./ ! minsta massavedsdiameter och timmerdiameter
 
 5     OUT(:) =0.0
 	  ITS = min(I,3)

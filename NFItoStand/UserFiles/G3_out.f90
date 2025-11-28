@@ -36,9 +36,9 @@
 		DATA        hd/10./                ! dominant height for switch to establised forest
         CHARACTER   :: CTRT(7)*4
         DATA CTRT/'"NM"', '"IP"', '"Cl"', '"Th"', '"Fe"', '"FT"', '"FF"'/
-       logical	:: WriteTest,maxThinnings,Fertilization,Lodgepole,CCF,FirstWrite,ModelII
+       logical	:: WriteTest,maxThinnings,Fertilization,Lodgepole,CCF,FirstWrite,ModelII,Pilot
        integer  :: CurrAct(MXPER),FFn(MXPER),F0,F1
-       DATA	WriteTest/.false./,ModelII/.false./
+       DATA	WriteTest/.false./,ModelII/.true./,Pilot/.false./
 
 ! Biomass
         REAL :: TSbiom(mxper), TScoar(mxper), TSfine(mxper), ResStm(mxper), ResRot(mxper)
@@ -261,55 +261,22 @@ do t=1,2
         enddo
 
     !-- Get resource information
-    call G3URES(1,iper,ResStm,CostSilv,CostHarv,CostForw,CostGROT,restim,resmav,resreject,IERR)
-    if(IERR == 1)RETURN
+        call G3URES(1,iper,ResStm,CostSilv,CostHarv,CostForw,CostGROT,restim,resmav,resreject,IERR)
+        if(IERR == 1)RETURN
 
-    ! Forest info for further analysis        
-            if(FirstWrite)write(NR,'(99a)')	&
-        'Plot,Prog,VariableName,Periods,NRatg,Treatm,', &
-        'SCost,Hcost,Fcost,Rcost,Age,m3Vol,m3Pin,m3Spr,m3Bir,m3Nob,m3Ovr,m3Hyb,m3dec,', &
-        'Hgv,Dgv,Stems,LSA,m3Harv,TSbiom,', &
-        'TScoar,TSfine,M3skMort,', &
-        'SIS'
-                write (Cout, '(1x, 6(G,","), 19(F10.1,","),3(F10.3,","),F4.0)') &
-                CFIX(StandID), &
-                jNr, &
-                jNr, &
-                iiper, &
-                nratg(iiper), &
-                CTRT(IXATG(nratg(iiper))),	& 
-                CostSilv(iiper),	&
-                CostHarv(iiper),	&
-                CostForw(iiper),	&
-                CostGROT(iiper),    &
-                BESTin(TotAge,iiper),	&
-                BESTin(V,iiper),	&
-                ARTin(Vs,Pine,iiper) + ARTin(Vs,Contorta,iiper),	&
-                ARTin(Vs,Spruce,iiper),	&
-                ARTin(Vs,Birch,iiper),	&
-                ARTin(Vs,Oak,iiper) + ARTin(Vs,Beech,iiper),	&
-                sum(ARTin(Vs,Birch:Poppel,iiper))               &
-                - ARTin(Vs,Birch,iiper) - ARTin(Vs,Oak,iiper) - ARTin(Vs,Beech,iiper) - ARTin(Vs,Contorta,iiper),	&
-                sum(ARTin(Vs,HybAsp:Poppel,iiper)),	&
-                BESTin(V,iiper) - ( sum(ARTin(Vs,Pine:Spruce,iiper)) + ARTin(Vs,Contorta,iiper) ),	&
-                BESTin(Hdom,iiper),	&
-                BESTin(D,iiper),	&
-                BESTin(N,iiper),	&
-                LSAfa(IFIX(Owner),FIX(SI),ARTin(:,:,iiper) ), &
-                sum(cut(UVs,:,iiper)), &
-                TSbiom(iiper), &
-                TScoar(iiper), &
-                TSfine(iiper),	&
-                BESTin(Mort,iiper), &
-                FIX(SI)
-                k=0
-                do i = 1,len(TRIM(Cout))
-                        if(Cout(i:i) /=  ' ')then
-                            k = k + 1
-                            Cout(k:k) = Cout(i:i)
-                        endif
-                enddo
-                write(nr,'(a)')Cout(1:k-1)
+        ! Forest info for further analysis
+        call PrepOutputData(nr,FirstWrite,Pilot,jNr,iiper,CTRT(IXATG(nratg(iiper))), &
+            CostSilv(iiper),CostHarv(iiper),CostForw(iiper),CostGROT(iiper), &
+            TSbiom(iiper),TScoar(iiper),TSfine(iiper), Cout )
+ 
+        k=0
+        do i = 1,len(TRIM(Cout))
+            if(Cout(i:i) /=  ' ')then
+                k = k + 1
+                Cout(k:k) = Cout(i:i)
+            endif
+        enddo
+        write(nr,'(a))')Cout(1:k-1)
 		
             ! factor info (excl. cost)
                 Decids = SUM(restim(birch:MXSPECI,iiper)) + sum(resmav(birch:MXSPECI,iiper))  &
@@ -347,7 +314,7 @@ do t=1,2
                  write(70,'(2x,a,",",a,",",a,",",i4,",",f6.1)')	&
                  'ResRot',CstandId, jNr, iiper, ResRot(iiper) 
 
-       FirstWrite = .false.
+            FirstWrite = .false.
     enddo      
     irec=irec+1
 
@@ -355,3 +322,93 @@ enddo
 
 RETURN
 END
+    
+SUBROUTINE PrepOutputData(NR,FirstWrite,Pilot,jNr,iiper,CTRT, &
+    CostSilv,CostHarv,CostForw,CostGROT, &
+    TSbiom,TScoar,TSfine, Cout )
+
+	USE G3_Global
+    USE G3_GAMAIN
+	USE G3_GAPER
+	USE G3_GAFRAM
+	USE G3_NAMES 
+
+    integer     :: NR,iiper
+    logical     :: FirstWrite,Pilot
+    character   :: Cout*2000,jNr*7,CTRT*4
+    real        ::CostSilv,CostHarv,CostForw,CostGROT,TSbiom,TScoar,TSfine,LSAfa
+   
+
+!-- Local
+    character   :: Header*500,CoutA*2000,CoutB*1000
+    integer     :: k
+    
+    Header = ' '
+    if(FirstWrite)then
+        Header = &
+        'Plot,Prog,VariableName,Periods,NRatg,Treatm,'// &
+        'SCost,Hcost,Fcost,Rcost,'// &
+        'Age,m3Vol,m3dec,Hgv,Dgv,Stems,LSA,SIS,m3Harv,'// &
+        'TSbiom,TScoar,TSfine,M3skMort,'// &
+        'm3Pin,m3Spr,m3Bir,m3Nob,m3Ovr,m3Hyb' 
+        k = len(TRIM(Header))
+        if(Pilot)Header = Header(1:k)// &
+        ',dPin,dSpr,dBir,dNob,dOvr,dHyb,'// &
+        'stPin,stSpr,stBir,stNob,stOvr,stHyb'
+        write(nr,'(a)')Header(1:len(TRIM(Header)))
+    endif
+        
+   ! '(1x, 6(G,","), 19(F10.1,","),3(F10.3,","),F4.0)'
+    write (CoutA, '(12G,4(f8.0,a),99G10.4)') &
+                CFIX(StandID),",", &
+                jNr,",", &
+                jNr,",", &
+                iiper,",", &
+                nratg(iiper),",", &
+                CTRT,",",	& 
+                CostSilv,",",	&
+                CostHarv,",",	&
+                CostForw,",",	&
+                CostGROT,",",    &
+                BESTin(TotAge,iiper),",",	&
+                BESTin(V,iiper),",",	&
+                BESTin(V,iiper) - ( sum(ARTin(Vs,Pine:Spruce,iiper)) + ARTin(Vs,Contorta,iiper) ),",",	&
+                BESTin(Hdom,iiper),",",	&
+                BESTin(D,iiper),",",	&
+                BESTin(N,iiper),",",	&
+                LSAfa(IFIX(Zone),FIX(SI),ARTin(:,:,iiper)),",", &
+                FIX(SI),",", &
+                sum(cut(UVs,:,iiper)),",", &
+                TSbiom,",", &
+                TScoar,",", &
+                TSfine,",",	&
+                BESTin(Mort,iiper),",", &
+                ARTin(Vs,Pine,iiper) + ARTin(Vs,Contorta,iiper),",",	&
+                ARTin(Vs,Spruce,iiper),",",	&
+                ARTin(Vs,Birch,iiper),",",	&
+                ARTin(Vs,Oak,iiper) + ARTin(Vs,Beech,iiper),",",	&
+                ARTin(Vs,Aspen,iiper) + ARTin(Vs,SouthBrl,iiper) +  ARTin(Vs,OtherBrl,iiper) +  ARTin(Vs,Larch,iiper),",", &
+                ARTin(Vs,HybAsp,iiper) + ARTin(Vs,Poppel,iiper)
+    if(Pilot)then
+            write (CoutB, '(99G10.4)')  &
+                G3DIA(ARTin(Gs,Pine,iiper)+ARTin(Gs,Contorta,iiper),ARTin(Ns,Pine,iiper)+ARTin(Ns,Contorta,iiper)),",",	&
+                G3DIA(ARTin(Gs,Spruce,iiper),ARTin(Ns,Spruce,iiper)),",",	&
+                G3DIA(ARTin(Gs,Birch,iiper),ARTin(Ns,Birch,iiper)),",",	&
+                G3DIA(ARTin(Gs,Oak,iiper)+ARTin(Gs,Beech,iiper),ARTin(Ns,Oak,iiper)+ARTin(Ns,Beech,iiper)),",",	&
+                G3DIA(ARTin(Gs,Aspen,iiper) + ARTin(Gs,SouthBrl,iiper) +  ARTin(Gs,OtherBrl,iiper) +  ARTin(Gs,Larch,iiper), &
+                    ARTin(Ns,Aspen,iiper) + ARTin(Ns,SouthBrl,iiper) +  ARTin(Ns,OtherBrl,iiper) +  ARTin(Ns,Larch,iiper)),",",	&
+                G3DIA(ARTin(Gs,HybAsp,iiper)+ARTin(Gs,Poppel,iiper),ARTin(Ns,HybAsp,iiper)+ARTin(Ns,Poppel,iiper)),",",	&
+                ARTin(Ns,Pine,iiper) + ARTin(Ns,Contorta,iiper),",",	&
+                ARTin(Ns,Spruce,iiper),",",	&
+                ARTin(Ns,Birch,iiper),",",	&
+                ARTin(Ns,Oak,iiper)+ARTin(Ns,Beech,iiper),",",	&
+                ARTin(Ns,Aspen,iiper) + ARTin(Ns,SouthBrl,iiper) +  ARTin(Ns,OtherBrl,iiper) +  ARTin(Vs,Larch,iiper),",", &
+                ARTin(Ns,HybAsp,iiper)+ARTin(Ns,Poppel,iiper)
+            Cout = CoutA(1:len(TRIM(CoutA)))//','//CoutB(1:len(TRIM(CoutB)))
+    else
+            Cout = CoutA(1:len(TRIM(CoutA)))
+    endif
+    
+    return
+    end
+

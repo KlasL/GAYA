@@ -139,7 +139,7 @@ data mode/'NFI'/  ! Set to 'NFI' when running with NFI data and 'Stand' when wit
         BESTin(:,IPER) = 0.0
 
 !-- Non stand values -------------------------------------------------
-     	IFIX(CCscenario) = 1	! Climate change scenario: 0 = No growth effect; 1 = B2; 2 = A2
+     	IFIX(CCscenario) = 1	! Climate change scenario: -1 = -0.08; 0 = No growth effect; 1 = B2; 2 = A2
         
         ! SEKVENTIELL INLŽSNING
     IF(OLDFOR)THEN

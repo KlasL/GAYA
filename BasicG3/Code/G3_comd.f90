@@ -251,7 +251,8 @@ GO TO 1
 !-- FNYSK --------------------------------------------------------------
 
 20    nfnew=0
-IF(nz == 0)GO TO 1
+ioknf1 =0
+ioknf2 =0
 read(nrfil( 2),*)	! Read header
 k=0
 21      k=k+1
@@ -311,17 +312,27 @@ GO TO 1
 
 ! TREATMENT NUMBER K
 100   READ(ch,*)k
+ixatg(k)=0
+ioka1(1:mxvk1,k)=0
+ioka2(1:mxvk1,k)=0
+ioka3(1:mxvk1,k)=0
+oka(1:2,1:mxvk,k) = 0.
+noka1(1:mxvk1,k)=0
+noka2(1:mxvk1,k)=0
+noka3(1:mxvk1,k)=0
+noka(1:2,1:mxvk,k) = 0.
+IAUTA1(1:mxvk1,k)=0
+IAUTA2(1:mxvk1,k)=0
+IAUTA3(1:mxvk1,k)=0
+AUTA(1:2,1:mxvk,k) = 0.
+nk=INDEX(ch,',')
+IF(nk == 0)GO TO 1
 natg=MAX(natg,k)
 IF(natg > mxatg)THEN
   WRITE(*,'(A,I4)')' DEFATG - No. of treatment exceeds ',mxatg
   GO TO 260
 END IF
 atg(1:10,0:mxspeci,k)=0.0
-nk=INDEX(ch,',')
-IF(nk == 0)THEN
-  ixatg(k)=0
-  GO TO 1
-END IF
 CALL g3jfr(20,ctrt,2,ch(nk+1:nk+2),j)
 IF(j <= 0)THEN
   WRITE(*,*)' DEFATG - Wrong def. of treatment:',ch(nk+1:nk+2)
@@ -375,7 +386,6 @@ GO TO 102
 
 ! TREATMENT NUMBER K
 110     READ(ch,*)k
-ioka1(1:mxvk1,k)=0; ioka2(1:mxvk1,k)=0
 nk=INDEX(ch,',')
 IF(nk == 0)THEN
   WRITE(*,*)' OKATG - Wrong specification: ',trim(ch)
@@ -491,7 +501,6 @@ GO TO 122
 
 ! TREATMENT NUMBER K
 130     READ(ch,*)k
-iauta1(1:mxvk1,k)=0; iauta2(1:mxvk1,k)=0
 nk=INDEX(ch,',')
 IF(nk == 0)THEN
   WRITE(*,*)' AUTATG - Wrong specification: ',trim(ch)
@@ -675,7 +684,6 @@ GO TO 1
 
 ! TREATMENT NUMBER K
 330     READ(ch,*)k
-noka1(1:mxvk1,k)=0; noka2(1:mxvk1,k)=0
 nk=INDEX(ch,',')
 IF(nk == 0)THEN
   WRITE(*,*)' OKATG - Wrong specification: ',trim(ch)
