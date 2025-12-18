@@ -71,7 +71,7 @@ LOGICAL	:: Start,Hugin,Brandel
 DATA NoOfSpecies/10/,Start/.true./,hd/10./,Hugin/.false./,Brandel/.false./                ! Övre höjd for inväxning (se RTVX)
 data treatmentAgeAtStart/-99./
 character :: mode*20
-data mode/'NFI'/  ! Set to 'NFI' when running with NFI data and 'Stand' when with segment data
+data mode/'Stand'/  ! Set to 'NFI' when running with NFI data and 'Stand' when with segment data
 ! Dummy inläsning
        real :: x
        integer :: ix
