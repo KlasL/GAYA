@@ -38,7 +38,7 @@
         DATA CTRT/'"NM"', '"IP"', '"Cl"', '"Th"', '"Fe"', '"FT"', '"FF"'/
        logical	:: WriteTest,maxThinnings,Fertilization,Lodgepole,CCF,FirstWrite,ModelII,Pilot
        integer  :: CurrAct(MXPER),FFn(MXPER),F0,F1
-       DATA	WriteTest/.false./,ModelII/.true./,Pilot/.false./
+       DATA	WriteTest/.false./,ModelII/.false./,Pilot/.true./
 
 ! Biomass
         REAL :: TSbiom(mxper), TScoar(mxper), TSfine(mxper), ResStm(mxper), ResRot(mxper)
@@ -354,7 +354,8 @@ SUBROUTINE PrepOutputData(NR,FirstWrite,Pilot,jNr,iiper,CTRT, &
         k = len(TRIM(Header))
         if(Pilot)Header = Header(1:k)// &
         ',dPin,dSpr,dBir,dNob,dOvr,dHyb,'// &
-        'stPin,stSpr,stBir,stNob,stOvr,stHyb'
+!        'stPin,stSpr,stBir,stNob,stOvr,stHyb'
+        'gPin,gSpr,gBir,gNob,gOvr,gHyb'
         write(nr,'(a)')Header(1:len(TRIM(Header)))
     endif
         
@@ -398,12 +399,12 @@ SUBROUTINE PrepOutputData(NR,FirstWrite,Pilot,jNr,iiper,CTRT, &
                 G3DIA(ARTin(Gs,Aspen,iiper) + ARTin(Gs,SouthBrl,iiper) +  ARTin(Gs,OtherBrl,iiper) +  ARTin(Gs,Larch,iiper), &
                     ARTin(Ns,Aspen,iiper) + ARTin(Ns,SouthBrl,iiper) +  ARTin(Ns,OtherBrl,iiper) +  ARTin(Ns,Larch,iiper)),",",	&
                 G3DIA(ARTin(Gs,HybAsp,iiper)+ARTin(Gs,Poppel,iiper),ARTin(Ns,HybAsp,iiper)+ARTin(Ns,Poppel,iiper)),",",	&
-                ARTin(Ns,Pine,iiper) + ARTin(Ns,Contorta,iiper),",",	&
-                ARTin(Ns,Spruce,iiper),",",	&
-                ARTin(Ns,Birch,iiper),",",	&
-                ARTin(Ns,Oak,iiper)+ARTin(Ns,Beech,iiper),",",	&
-                ARTin(Ns,Aspen,iiper) + ARTin(Ns,SouthBrl,iiper) +  ARTin(Ns,OtherBrl,iiper) +  ARTin(Vs,Larch,iiper),",", &
-                ARTin(Ns,HybAsp,iiper)+ARTin(Ns,Poppel,iiper)
+                ARTin(Gs,Pine,iiper) + ARTin(Gs,Contorta,iiper),",",	&
+                ARTin(Gs,Spruce,iiper),",",	&
+                ARTin(Gs,Birch,iiper),",",	&
+                ARTin(Gs,Oak,iiper)+ARTin(Gs,Beech,iiper),",",	&
+                ARTin(Gs,Aspen,iiper) + ARTin(Gs,SouthBrl,iiper) +  ARTin(Gs,OtherBrl,iiper) +  ARTin(Vs,Larch,iiper),",", &
+                ARTin(Gs,HybAsp,iiper)+ARTin(Gs,Poppel,iiper)
             Cout = CoutA(1:len(TRIM(CoutA)))//','//CoutB(1:len(TRIM(CoutB)))
     else
             Cout = CoutA(1:len(TRIM(CoutA)))

@@ -32,7 +32,9 @@ BESTin(:,IPER+1) = 0.
 ARTin(:,:,IPER+1)= 0.
 
 !-- Growth projection ----------------------
-
+    if(IPER < StartToUse)then
+        ARTin(:,:,IPER+1) = OrigonalARTin(:,:,IPER+1)
+    else
  	    do i=1,MXSPECI
                 ARTin(Ms,i,IPER+1)=0.           
                 ARTin(Ns,i,IPER+1)=ARTout(Ns,i,IPER)*RelGr(Ns,i,IPER)           
@@ -41,6 +43,7 @@ ARTin(:,:,IPER+1)= 0.
                 ARTin(Hs,i,IPER+1)=ARTout(Hs,i,IPER)*RelGr(Hs,i,IPER)           
 			    if(ARTin(Ns,i,IPER+1) > 0.)ARTin(BHAs,i,IPER+1)=ARTout(BHAs,i,IPER)+5.
         enddo
+    endif
 
 RETURN
 END

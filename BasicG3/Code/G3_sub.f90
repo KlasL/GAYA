@@ -97,9 +97,11 @@
 
 !-- TEST THAT TREATMENT IS ALLOWED
       IF( IG3CHK(IOKA1(1,ID),IOKA2(1,ID),IOKA3(1,ID),OKA(1,1,ID),.true.,IPER) == .false. )then
-        IERR=1; return
+        IERR=1
+        return
       elseif ( IG3CHK(NOKA1(1,ID),NOKA2(1,ID),NOKA3(1,ID),NOKA(1,1,ID),.false.,IPER) == .true.)THEN
-        IERR=1; return
+        IERR=1
+        return
       ENDIF
       NRATG(IPER)=ID
 

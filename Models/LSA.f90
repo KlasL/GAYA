@@ -11,24 +11,24 @@ REAL function LSAfa(PoS,SIS,ART) result(LSAfax)
 !
 	REAL 	:: SIS,ART(NART,MXSPECI),TotVol,ConifShare,NoblesShare
     INTEGER	::	PoS
+    INTEGER	::	iSIS
+    real    :: tableLSA(7)
+    data tableLSA / 90., 80., 70., 65., 60., 50., 45./
     
-	LSAfax = 35.
     TotVol = sum(ART(Vs,:))
     if(TotVol < 1.)return
+    
+    iSIS = min(max(int((SIS-12.)/4.)+1,1),7)
     ConifShare = (ART(Vs,Pine) + ART(Vs,Spruce))/TotVol
     NoblesShare = (ART(Vs,Oak) + ART(Vs,Beech))/TotVol
 
-	if(ConifShare > 0.5)then
-		if(SIS >= 30.)then
-    		LSAfax = 50.
-	    elseif(SIS <= 12.)then
-    	  	LSAfax = 90.
-	    else
-    	  	LSAfax = 90.-40./18.*(SIS-12.)
-	    endif
-	    if(PoS == 1)LSAfax = LSAfax + 10.
-    elseif(NoblesShare > 0.5)then
+    if(NoblesShare > 0.5)then
     	LSAfax = 90.
+    elseif(ConifShare > 0.5)then
+        LSAfax = tableLSA(iSIS)
+        if(PoS == 1)LSAfax = LSAfax + 10.
+    else
+        LSAfax = 35.
     endif
 
     return

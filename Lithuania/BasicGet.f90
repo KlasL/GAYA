@@ -4,6 +4,7 @@ IMPLICIT NONE
 SAVE
 ! Keep relative growth figures
 
+integer :: StartToUse
 REAL    :: RelGr(NART,MXSPECI,MXPER)
 REAL    :: OrigonalARTin(NART,MXSPECI,MXPER)
 
@@ -145,6 +146,7 @@ save
     
     write(*,'(i8,2a,i4)')M,' ',TRIM(CFIX(StandID)),LREC 
     
+    StartToUse = StartOld
     RETURN
     END
 
