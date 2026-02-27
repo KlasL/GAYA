@@ -12,7 +12,7 @@
 !
 !      
     real ::     fh(MXSPECI),hd
-	DATA        hd/10./                ! ™vre h”jd f”r inv„xning
+	DATA        hd/7./                ! ™vre h”jd f”r inv„xning
     DATA		fh/4.64,4.59,4.21,3.89,4.09,3.96,4.28,4.62,4.16,4.09,3.89,3.89/	! Form height from NFI 14-18, 7-10 m
 	INTEGER	:: i,its,DomSpec,roj
     REAL	:: VolBrandel,Ntot,DomH,Dia,Gy

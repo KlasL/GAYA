@@ -80,7 +80,7 @@
 
 	VolxBrandel = 0.
     if(din == 0.)RETURN
-      h	= max(1.4,hin) 
+      h	= max(1.4,hin)
       if(its == 2)h=hin*0.9
       d = din 
 !-- Bok (5) o ek (6) (Hagberg och Matern) ------------------------------

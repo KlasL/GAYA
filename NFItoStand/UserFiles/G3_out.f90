@@ -33,12 +33,12 @@
         REAL    :: CostSilv(MXPER),CostHarv(MXPER),CostForw(mxper),CostGROT(mxper), &
             restim(MXSPECI,MXPER),resmav(MXSPECI,MXPER),resreject(MXPER)
         REAL	:: hd
-		DATA        hd/10./                ! dominant height for switch to establised forest
+		DATA        hd/7./                ! dominant height for switch to establised forest
         CHARACTER   :: CTRT(7)*4
         DATA CTRT/'"NM"', '"IP"', '"Cl"', '"Th"', '"Fe"', '"FT"', '"FF"'/
        logical	:: WriteTest,maxThinnings,Fertilization,Lodgepole,CCF,FirstWrite,ModelII,Pilot
        integer  :: CurrAct(MXPER),FFn(MXPER),F0,F1
-       DATA	WriteTest/.false./,ModelII/.false./,Pilot/.true./
+       DATA	WriteTest/.false./,ModelII/.true./,Pilot/.true./
 
 ! Biomass
         REAL :: TSbiom(mxper), TScoar(mxper), TSfine(mxper), ResStm(mxper), ResRot(mxper)
@@ -59,77 +59,14 @@
 	  	if(istart == 0 )then
             FirstWrite = .true.
      		istart = 1
-     	 endif
+        endif
 
-!-- Initialize
+    !-- Initialize
 	irec=0
 	CstandId=CFIX(StandId)
 
 !-- Select for output
     maxThinnings=.false.;Fertilization=.false.;Lodgepole=.false.;CCF=.false.
-    if(Ver == 'Fe')then
-		Fertilization=.true.
-    elseif(Ver == 'TF')then
-		maxThinnings=.true.
-    elseif(Ver == 'Th')then
-		maxThinnings=.true.
-    elseif(Ver == 'Co')then
-        Lodgepole=.true.
-    elseif(Ver == 'CC')then
-        CCF=.true.
-    endif
-! Max 2 thinnings
-	if(maxThinnings)then
-		j=0
-		do iiper=iper1,iper,iper2
-    		if(IXATG(nratg(iiper)) == FF )j=0
-    		if(IXATG(nratg(iiper)) == Th .or. IXATG(nratg(iiper)) == FT)j=j+1
-			if(j>2)return
-    	enddo
-	endif
-! Fertilization
-	if(Fertilization)then
-		j=0
-    	do iiper=iper1,iper,iper2
-    		if(IXATG(nratg(iiper)) ==  Fe .or. IXATG(nratg(iiper)) ==  FT)j=j+1
-    	enddo
-    	if(j == 0)return
-	endif
-! Contorta
-	if(Lodgepole)then
-        if(FIX(SI) < 22. .or. FIX(SI) > 26.)return
-		j=0
-    	do iiper=iper1,iper,iper2
-    		if(IXATG(nratg(iiper)) ==  6 )j=j+1
-    	enddo
-    	if(j == 0)return
-		j=0
-    	do iiper=iper1,iper,iper2
-    		if(IXATG(nratg(iiper)) ==  6 )then
-                do i=iiper+1,iper
-                  if(IXATG(nratg(iiper)) /= 1 .and. IXATG(nratg(iiper)) /= 6 ) return
-                enddo
-            endif
-    	enddo
-	endif
-! CCF
-	if(CCF)then
-		j=0
-    	do iiper=iper1,iper,iper2
-    		if(IXATG(nratg(iiper)) ==  Cl)j=j+1
-    	enddo
-    	if(j < 3)return
-	endif
-! Remove: final harvest without inplanting IP
-	do iiper =1,NPER-InplantPeriods
-    	if(IXATG(nratg(iiper)) == FF)then
-        	j=0
-        	do i=iiper,nper
-          		if(IXATG(nratg(i)) == IP)j=j+1
-        	enddo
-            if(j==0)return
-        endif
-    enddo
 
 !-- non-factor info
      	if( WriteTest )then
@@ -355,7 +292,8 @@ SUBROUTINE PrepOutputData(NR,FirstWrite,Pilot,jNr,iiper,CTRT, &
         if(Pilot)Header = Header(1:k)// &
         ',dPin,dSpr,dBir,dNob,dOvr,dHyb,'// &
 !        'stPin,stSpr,stBir,stNob,stOvr,stHyb'
-        'gPin,gSpr,gBir,gNob,gOvr,gHyb'
+        'gPin,gSpr,gBir,gNob,gOvr,gHyb,'// &
+        'msPin,msSpr,msBir,msNob,msOvr,msHyb'
         write(nr,'(a)')Header(1:len(TRIM(Header)))
     endif
         
@@ -377,7 +315,7 @@ SUBROUTINE PrepOutputData(NR,FirstWrite,Pilot,jNr,iiper,CTRT, &
                 BESTin(Hdom,iiper),",",	&
                 BESTin(D,iiper),",",	&
                 BESTin(N,iiper),",",	&
-                LSAfa(IFIX(Zone),FIX(SI),ARTin(:,:,iiper)),",", &
+                BESTin(LSA,iiper),",", &
                 FIX(SI),",", &
                 sum(cut(UVs,:,iiper)),",", &
                 TSbiom,",", &
@@ -404,7 +342,13 @@ SUBROUTINE PrepOutputData(NR,FirstWrite,Pilot,jNr,iiper,CTRT, &
                 ARTin(Gs,Birch,iiper),",",	&
                 ARTin(Gs,Oak,iiper)+ARTin(Gs,Beech,iiper),",",	&
                 ARTin(Gs,Aspen,iiper) + ARTin(Gs,SouthBrl,iiper) +  ARTin(Gs,OtherBrl,iiper) +  ARTin(Vs,Larch,iiper),",", &
-                ARTin(Gs,HybAsp,iiper)+ARTin(Gs,Poppel,iiper)
+                ARTin(Gs,HybAsp,iiper) + ARTin(Gs,Poppel,iiper),",",	&
+                ARTin(Ms,Pine,iiper) + ARTin(Ms,Contorta,iiper),",",	&
+                ARTin(Ms,Spruce,iiper),",",	&
+                ARTin(Ms,Birch,iiper),",",	&
+                ARTin(Ms,Oak,iiper) + ARTin(Ms,Beech,iiper),",",	&
+                ARTin(Ms,Aspen,iiper) + ARTin(Ms,SouthBrl,iiper) +  ARTin(Ms,OtherBrl,iiper) +  ARTin(Ms,Larch,iiper),",", &
+                ARTin(Ms,HybAsp,iiper) + ARTin(Ms,Poppel,iiper)
             Cout = CoutA(1:len(TRIM(CoutA)))//','//CoutB(1:len(TRIM(CoutB)))
     else
             Cout = CoutA(1:len(TRIM(CoutA)))

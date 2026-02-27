@@ -11,7 +11,7 @@
 !-- LOCAL
     INTEGER ::  IFPER
     REAL    ::  hd
-	DATA        hd/10./                ! dominant height for switch to establised forest
+	DATA        hd/7./                ! dominant height for switch to establised forest
     
     IFPER = IPER+1
     if(BESTout(N,IPER) == 0.)then
@@ -65,7 +65,7 @@ implicit none
         REAL	:: BREEDING,HojdYoung,DiaYoung,BPSJGALL,BPSJGFAS,G3VOL,G3YTA
         REAL	:: rMIXe,Atot,T13,Dia1,Dia2,GB,NB,VB,PinShare,SprShare,HeurekaHojd,A1
         REAL	:: TvxDiaFactor(MXSPECI),TvxHojdFactor(MXSPECI),YoungDiaFactor(MXSPECI),eps
-		DATA        hd/10./                ! dominant height for switch to establised forest
+		DATA        hd/7./                ! dominant height for switch to establised forest
         DATA		eps/1.e-6/
     	DATA        MortPer5y/0.023/    ! Data från tidig SKA/AVB 
         DATA	TvxHojdFactor / 1., 1., 1., 1., 1., 1., 1., 1., 1., 1., 1.1, 1.1/
@@ -200,142 +200,3 @@ endif	! End section with SpecGThd being true
 
 RETURN
 END
-
-!     SUBROUTINE RTVX(IPER,ATG,IFIX,FIX,BEST1,ART1,BEST2,ART2)
-!!***********************************************************************
-!!  
-!!***********************************************************************
-!!-- GAYA-DEFINITIONER
-!        USE G3_Global
-!        USE G3_NAMES
-!        USE G3_interfaces
-!        INTEGER :: IPER,IFIX(NFIX)
-!        REAL    :: ATG(NTREAT),FIX(NFIX)
-!        REAL    :: BEST1(NBEST),ART1(NART,MXSPECI)
-!        REAL    :: BEST2(NBEST),ART2(NART,MXSPECI)
-!!-----------------------------------------------------------------------
-!	REAL	:: hd
-!	INTEGER	:: Main_species
-!	INTEGER,PARAMETER	:: mn=100    ! max antal tr„d
-!!-- npdiaf
-!	REAL	:: s_2,g_2,ContortaCoeff
-!!--
-!	integer	::	i,j
-!	real ::		fh(MXSPECI),DomHojd,HaeggT13,HeightCurve15m,HeightGrowth,MortPer5y,dia,T13
-!    real    ::  NST,GY,VOLYM,VMEDEL,VSTAND,VSNED,VTOP,DomH
-!	DATA        hd/10./                ! dominant height for switch to establised forest
-!    DATA        MortPer5y/0.023/    ! Data från tidig SKA/AVB 
-!    DATA		fh/4.64,4.59,4.21,3.89,4.09,3.96,4.28,4.62,4.16,4.09,3.89,3.89/	! Form height from NFI 14-18, 7-10 m
-!    real	:: 	fhf(5)
-!    DATA        fhf/1.183722043,-0.040572791,-0.00030491,0.001901613,0.443051145/
-!    INTEGER :: 	Sp2Hk(MXSPECI),ItsDom
-!    real	::	BEST3(NBEST),ART3(NART,MXSPECI)
-!
-!
-!!-- 
-!	BEST2=BEST1
-!	ART2=ART1
-!
-!!-- Compute basal area and volume for species
-! 	do i=1,MXSPECI
-!		if(art2(Ns,i) > 0.) then
-!            ART2(Ms,i)=ART2(Vs,i)*MortPer5y           
-!            ART2(Ns,i)=ART2(Ns,i)*(1.-MortPer5y)            
-! 			ART2(Gs,i)=ART2(Gs,i)*(1.-MortPer5y)  
-!			ART2(BHAs,i)=ART2(BHAs,i)+5.
-!        	HeightGrowth = 10./HeightCurve10m(i,FIX(SI))*5.
-!            if(i == Contorta)HeightGrowth = HeightGrowth*ContortaCoeff
-!            ART2(Hs,i) = ART2(Hs,i) + HeightGrowth
-! 			ART2(Vs,i)=G3VOL(I,ART2,IFIX,FIX)
-!        	ART2(Gs,i)=ART2(Vs,i)/fh(i)
-!        endif
-!	enddo
-!
-!!	call G3ATB(IPER+1,NM,ATG(:),ART2,BEST2,IFIX,FIX)
-!!
-!!   elseif(BEST2(G) > 0.1 .and. BEST2(Hdom) > hd )then
-!!      call ETVX(IPER+1,NM,IFIX,FIX,  BEST2,ART2,BEST3,ART3)
-!! 	do i=1,MXSPECI
-!!		if(art2(Ns,i) > 0.) then
-!! 			ART2(Vs,i)=G3VOL(I,ART2,IFIX,FIX)
-!!        	ART2(Gs,i)=ART2(Vs,i)/fh(i)
-!!        endif
-!!	enddo
-!      
-!!	s_2=sum(ART2(Ns,:))
-!!    g_2=sum(ART2(Gs,:))
-!!	roj=0
-!!	if(BEST2(TimeCl) < BEST2(TotAge))roj=1
-!!	ItsDom=maxloc(ART2(Ns,:))
-!!	if(g_2 > 0.)ItsDom=maxloc(ART2(Gs,:))
-!!    DomH = ART2(Hs,ItsDom)
-!!	call PetterssonYoungForestState(ItsDom,roj,FIX(SI),DomH,s_2, GY,VOLYM)
-!!	do i=1,MXSPECI
-!!        if(g_2 > 0.)then
-!!	      	ART2(Vs,i)=VOLYM*ART2(Gs,i)/g_2*(1.-MortPer5y) 
-!!	       	ART2(Gs,i)=GY*ART2(Gs,i)/g_2*(1.-MortPer5y) 
-!!        elseif(s_2 > 0.)then
-!!        	ART2(Vs,i)=VOLYM*ART2(Ns,i)/s_2*(1.-MortPer5y) 
-!!        	ART2(Gs,i)=GY*ART2(Ns,i)/s_2*(1.-MortPer5y) 
-!!        endif
-!!    enddo
-!	
-!!	do i=1,MXSPECI
-!!		if(art2(Ns,i) > 0.) then
-!!              HeightGrowth = 10./HeightCurve10m(i,FIX(SI))*5.
-!!              if(i == Contorta)HeightGrowth = HeightGrowth*ContortaCoeff
-!!              ART2(Hs,i) = ART2(Hs,i) + HeightGrowth
-!!        	ART2(Vs,i)=G3VOL(I,ART2,IFIX,FIX)
-!!            ART2(Ms,i)=ART2(Vs,i)*MortPer5y           
-!!            ART2(Ns,i)=ART2(Ns,i)*(1.-MortPer5y)            
-!!			ART2(Vs,i)=ART2(Vs,i)*(1.-MortPer5y)
-!!			ART2(BHAs,i)=ART2(BHAs,i)+5.
-!!            ART2(Gs,i)=ART2(Vs,i)/fh(i) ! dfh(art2(:,i))
-!!		endif
-!!	enddo
-!
-!      RETURN
-!      END
-!
-!      INTEGER*4 FUNCTION T13Haegglund(bgr,h100,its)
-!!c-----------------------------------------------------------------------
-!!c  Tid till br”sth”jd enligt H„gglund (Om ”vre h”jdens utveckling ...)
-!!c
-!!c  (in)  bgr   = breddgrad (o)
-!!c        h100  = bonitet h100 (dm)
-!!c        its   = bonitetbest„mmande tr„dslag (1=tall; 2=gran; (3+=tall))
-!!c  (ut)  T13   = tid till ”vre h”jd
-!!c-----------------------------------------------------------------------
-!      INTEGER ::   its,t0t13(11),gst13(12),gnt13(11),bon
-!      REAL ::      bgr,h100
-!      DATA     t0t13/ &
-!!c  Tall
-!!c     T12  T14  T16  T18  T20  T22  T24  T26  T28  T30  T32
-!     19,  16,  12,  11,  9,   9,   8,   8,   8,   7,   7/
-!      DATA     gst13/ &
-!!c  Gran - S:a Sv
-!!c     G16  G18  G20  G22  G24  G26  G28  G30  G32  G34  G36  G38
-!     12,  11,  10,  10,  9,   9,   8,   8,   7,   7,   7,   7/
-!      DATA     gnt13/ &
-!!c  Gran - N:a Sv
-!!c     G8   G10  G12  G14  G16  G18  G20  G22  G24  G26  G28   BHA
-!     22,  19,  17,  15,  13,  12,  11,  11,  10,  10,  9/
-!
-!      bon=nint((h100+1.)/10.)
-!      if(its.ne.2)then                          ! Tall
-!         bon=min(32,max(12,bon))
-!         bon=(bon-10)/2
-!         T13=t0t13(bon)
-!      elseif(bgr.le.60.)then                    ! Gran - S:a Sv
-!         bon=min(38,max(16,bon))
-!         bon=(bon-14)/2
-!         T13=gst13(bon)
-!      else                                      ! Gran - N:a Sv
-!         bon=min(28,max(8,bon))
-!         bon=(bon-6)/2
-!         T13=gnt13(bon)
-!      endif
-!
-!      RETURN
-!      END
-

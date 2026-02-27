@@ -68,10 +68,10 @@ real    :: treatmentAgeAtStart  ! Indication of no previous treatment at start
 INTEGER 	:: i,j,NoOfSpecies,DomSpecies,NewFor,Hkl
 real 		:: hd,Rnd,RndLim,TBHA,s_2,roj,T13,HojdYoung,DiaYoung,DiaAtBRH
 LOGICAL	:: Start,Hugin,Brandel
-DATA NoOfSpecies/10/,Start/.true./,hd/10./,Hugin/.false./,Brandel/.false./                ! Övre höjd for inväxning (se RTVX)
+DATA NoOfSpecies/10/,Start/.true./,hd/7./,Hugin/.false./,Brandel/.false./                ! Övre höjd for inväxning (se RTVX)
 data treatmentAgeAtStart/-99./
 character :: mode*20
-data mode/'Stand'/  ! Set to 'NFI' when running with NFI data and 'Stand' when with segment data
+data mode/'NFI'/  ! Set to 'NFI' when running with NFI data and 'Stand' when with segment data
 ! Dummy inläsning
        real :: x
        integer :: ix
@@ -139,7 +139,7 @@ data mode/'Stand'/  ! Set to 'NFI' when running with NFI data and 'Stand' when w
         BESTin(:,IPER) = 0.0
 
 !-- Non stand values -------------------------------------------------
-     	IFIX(CCscenario) = 1	! Climate change scenario: -1 = -0.08; 0 = No growth effect; 1 = B2; 2 = A2
+     	IFIX(CCscenario) = 0	! Climate change scenario: -1 = -0.08; 0 = No growth effect; 1 = B2; 2 = A2
         
         ! SEKVENTIELL INLŽSNING
     IF(OLDFOR)THEN
@@ -311,6 +311,7 @@ data mode/'Stand'/  ! Set to 'NFI' when running with NFI data and 'Stand' when w
                         St_SoilMoist, &
                         St_Edge, &
                         St_Peat, &
+                        St_Domain, &
                         i,j,k
         real         :: &
                         St_Area, &
@@ -360,6 +361,7 @@ data mode/'Stand'/  ! Set to 'NFI' when running with NFI data and 'Stand' when w
     read(cin2(15),*)   St_Slope
     read(cin2(16),*)   St_TerrTrpDistance
     read(cin2(17),*)   St_TerrTrpStatus
+    read(cin2(18),*)   St_Domain
 
     !-- Transfer NFI data from storage to active plot -----------------------------
     j = 1
@@ -378,7 +380,7 @@ data mode/'Stand'/  ! Set to 'NFI' when running with NFI data and 'Stand' when w
     else
        FIX(mToRoad) =  2000.		! Far from road or small
     endif
-    IFIX(Domain) = St_Edge
+    IFIX(Domain) = St_Domain
     IFIX(LocCli) = NFI_LocCli(j)
     IFIX(Ftype) = NFI_Ftype(j)
     FIX(Tsum) = NFI_Tsum(j)

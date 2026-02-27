@@ -1,4 +1,4 @@
-REAL FUNCTION HeurekaHojd(i,A1,H1) result(HeurekaHojdx)
+REAL FUNCTION xHeurekaHojd(i,A1,H1) result(HeurekaHojdx)
 !***********************************************************************
 ! Höjdtillväxt enl. Heureka:
 ! Höjdtillväxt för enskilda träd, beräknade med funktioner för övrehöjdens utveckling 
@@ -42,8 +42,7 @@ REAL	:: HeCo(10,4),DS,R,H2
     END
     
 
-REAL FUNCTION xHeurekaHojd(i,A1,H1) result(xHeurekaHojdx)
-! !!!Veerkar vara fel på parametrarna eller modellen
+REAL FUNCTION HeurekaHojd(i,A1,H1) result(HeurekaHojdx)
 !***********************************************************************
 ! Höjdtillväxt enl. Heureka:
 ! Höjdtillväxt för enskilda träd, beräknade med funktioner för övrehöjdens utveckling 
@@ -60,7 +59,7 @@ INTEGER	:: i
 REAL	:: A1,H1
 !
 INTEGER	:: j
-REAL	:: A2,dh,r,asi(7),beta(7),p2(7),Sp2Sp(MXSPECI)
+REAL	:: A2,H2,dh,r,asi(7),beta(7),p2(7),Sp2Sp(MXSPECI)
 
 !       pine    spruce  birch   aspen   beech   oak larch
 DATA asi/ 25, 10, 7, 7, 15, 1000, 17.97 /
@@ -74,9 +73,10 @@ DATA p2/ -1.7829, -1.5978, -1.387, -0.9771, -1.7753, -1.4317, -1.3451 /
     A2 = A1+5.
     dh = beta(j)*asi(j)**p2(j)
     r  = SQRT( (H1-dh)**2 + 4.*beta(j)*H1*A1**p2(j) )
-    xHeurekaHojdx = (H1+dh+r)/( 2. + (4.*beta(j)*A2**p2(j))/(H1-dh+r) )
+    H2 = (H1+dh+r)/( 2. + (4.*beta(j)*A2**p2(j))/(H1-dh+r) )
 
-    
+    HeurekaHojdx = H2 - H1
+ 
 	RETURN
     END
 
@@ -323,4 +323,3 @@ DiaYOUNGx = exp(lnD)*0.8	! FIX to reduce growth
 RETURN
 END
     
-

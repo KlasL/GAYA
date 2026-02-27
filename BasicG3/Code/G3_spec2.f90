@@ -206,10 +206,11 @@ INTEGER ::  &               ! ART
     Gs,     & ! 3
 	Hs,		& ! 4
 	BHAs,	& ! 5
-    Vs,     & ! 6
-    Ms        ! Mortality (m3/ha and 5 year)
-DATA Ns,N0s,Gs,Hs,BHAs,Vs,Ms &
-	/1,2,3,4,5,6,7/
+    Vs,     & ! 6 Volume (msk/ha)
+    Ms,     & ! 7 Mortality (m3/ha and 5 year)
+    Vx        ! 8 Volume net growth (m3/ha and 5 year)
+DATA Ns,N0s,Gs,Hs,BHAs,Vs,Ms,Vx &
+	/1,2,3,4,5,6,7,8/
 
 INTEGER ::  &               ! CUT
 	UVs,	& ! 1
