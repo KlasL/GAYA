@@ -38,7 +38,7 @@
         DATA CTRT/'"NM"', '"IP"', '"Cl"', '"Th"', '"Fe"', '"FT"', '"FF"'/
        logical	:: WriteTest,maxThinnings,Fertilization,Lodgepole,CCF,FirstWrite,ModelII,Pilot
        integer  :: CurrAct(MXPER),FFn(MXPER),F0,F1
-       DATA	WriteTest/.false./,ModelII/.true./,Pilot/.true./
+       DATA	WriteTest/.false./,ModelII/.false./,Pilot/.true./
 
 ! Biomass
         REAL :: TSbiom(mxper), TScoar(mxper), TSfine(mxper), ResStm(mxper), ResRot(mxper)

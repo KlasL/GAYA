@@ -29,6 +29,7 @@ SAVE
 
 ! Defines common variables NFNEW
 INTEGER ::	NFNEW
+REAL    ::  FNcost(MXNEWF)
 REAL    ::  FNART(NART,MXSPECI,MXNEWF)
 INTEGER ::	IOKNF1(MXVK1,MXNEWF)
 INTEGER ::	IOKNF2(MXVK1,MXNEWF)
@@ -168,9 +169,11 @@ DATA Pine,Spruce,Birch,Aspen,Oak,Beech,SouthBrl,Contorta,OtherBrl,Larch,HybAsp,P
 
 ! CFIX (use StandID)
 ! IFIX
-INTEGER ::	StandID,Domain,Sapling,LocCli,Ftype,Peat,Ditch,Moist,Zone,CCscenario,Owner			
-DATA StandID,Domain,Sapling,LocCli,Ftype,Peat,Ditch,Moist,Zone,CCscenario,Owner	&
-	/1,2,3,4,5,6,7,8,9,10,11/
+INTEGER ::	StandID,Domain,Sapling,LocCli,Ftype,Peat,Ditch,Moist,Zone,CCscenario,Owner, &
+            DominSp,RegenSp,CutClass
+DATA    StandID,Domain,Sapling,LocCli,Ftype,Peat,Ditch,Moist,Zone,CCscenario,Owner,	&
+        DominSp,RegenSp,CutClass &
+	/1,2,3,4,5,6,7,8,9,10,11,12,13,14/
 ! FIX
 INTEGER ::		Area,Spar,Lat,ASL,Tsum,SI,mToRoad,Slope								
 DATA Area,Spar,Lat,ASL,Tsum,SI,mToRoad,Slope	&

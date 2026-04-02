@@ -75,11 +75,11 @@ DATA com2(30)/'VERSION    '/, com2(31)/'SKIP       '/,  &
     com2(32)/'UNSKIP     '/, com2(33)/'NOACTION   '/ 
 DATA ctrt/'NM IP Cl Th Fe FT FF'/
 DATA catg/'TS BA SR SA RD FA FY NF'/
-!                   1  2  3  4  5  6  7  8  9 10 11 12
+!                   1  2  3  4  5  6  7  8  9 10 11 12 13 14
 DATA cvar( 1: 30)/'TA TT TP TF ST BA VO DI HE X1 '/		! BEST
 DATA cvar(31: 60)/'X2 X3 X4 SP SS SD LS X5 X6 X7 '/		! BEST
-DATA cvar(61: 96)/'B1 B2 B3 B4 B5 B6 B7 B8 B9 BA BB BC '/		! BEST
-DATA cvar(97:132)/'I1 I2 I3 LC FT PE DH MO ZO I4 I5 I6 '/ 	! IFIX
+DATA cvar(61: 96)/'B1 B2 B3 B4 B5 B6 B7 B8 B9 B0 BB BC '/		! BEST
+DATA cvar(97:138)/'I1 I2 I3 LC FT PE DH MO ZO I4 I5 DS RS CC '/ 	! IFIX
 DATA cvar(133:155)/'F1 F2 LT AS TS SI F3 PR'/	! FIX + Period
 DATA nritot,nrotot,LOG,tused/4*0/
 

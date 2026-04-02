@@ -26,6 +26,7 @@
 	USE G3_GAATG
 	USE G3_GAFRAM
     USE G3_NAMES
+    USE G3_GANEWF
 	USE G3_interfaces
 	INTEGER ::	IP1,IP2,IERR
     REAL    :: ODT(MXPER),CostSilv(MXPER),CostHarv(MXPER),CostForw(MXPER),CostGROT(MXPER), &
@@ -39,7 +40,7 @@
 	  DATA	HarvHcostTh,ForwHcostTh,HarvHcostFF,ForwHcostFF/1100.,900.,1350.,1070./
 	  DATA	CleaningHcost/375./,FertilizationCost/20./,ThinningPremium/0./
 ! SkogsvÜrdskostnad bon 12- 8BioFrameCom.txt
-      INTEGER :: SIclass
+      INTEGER :: SIclass,NewFnr
       REAL*4   skvc(5)
 	  DATA skvc/4050.,5400.,6750.,8100.,9450./					! Skogforsk-resultat nr7_2001 
 ! Qualities and transport (from 
@@ -75,14 +76,16 @@
          resreject(IPER) = 0.0
          VTOT = 0.
 
-!-- èTGéRDSOBEROENDE UPPGIFTER
+!-- èTREATMENT DEPENDENT
          IATYP=IXATG(NRATG(IPER))
 !-- SKOGSV≈RD (ing. tillstÂnd eller vid slutavverkning
 		if(IATYP == IP)then
-        	CostSilv(IPER) = CostSilv(IPER) +	9434. + 484.*(nint(FIX(SI))-22)
-        	CostSilv(IPER) = CostSilv(IPER) + &	
-            	(ARTout(Ns,HybAsp,IPER)+ARTout(Ns,Poppel,IPER))*(1.5+4.)	! L‰gg till planterade*(plantering+planta)
-         	CostSilv(IPER) = CostSilv(IPER)*exp(0.03*BESTout(TotAge,IPER))
+            NewFnr=NINT(ATG(NFnr,0,NRATG(IPER)))
+            CostSilv(IPER) = FNcost(NewFnr)
+!        	CostSilv(IPER) = CostSilv(IPER) +	9434. + 484.*(nint(FIX(SI))-22)
+!        	CostSilv(IPER) = CostSilv(IPER) + &	
+!            	(ARTout(Ns,HybAsp,IPER)+ARTout(Ns,Poppel,IPER))*(1.5+4.)	! L‰gg till planterade*(plantering+planta)
+!         	CostSilv(IPER) = CostSilv(IPER)*exp(0.03*BESTout(TotAge,IPER))
         endif
 !-- R÷JNING
  		IF(IATYP.EQ.Cl)THEN

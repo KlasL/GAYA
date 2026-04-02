@@ -253,15 +253,15 @@
      			     7,99/
 !				    01,02,03,04,05,06,07,08,09,10,
 
-! BEST: 1-32; IFIX: 33-44; FIX: 45-51; PR:52
-      REAL*4 VAR(52)
+! BEST: 1-32; IFIX: 33-46; FIX: 47-53; PR:54
+      REAL*4 VAR(54)
 
 !-- BRING OVER VALUES TO VAR ------------------------------------------
 
       DO I=1,32; VAR(I)=BESTin(I,IPER); ENDDO
-      DO I=33,44; VAR(I)=IFIX(I-32); ENDDO
-      DO I=45,51; VAR(I)=FIX(I-44); ENDDO
-      VAR(52)=IPER
+      DO I=33,46; VAR(I)=IFIX(I-32); ENDDO
+      DO I=47,53; VAR(I)=FIX(I-46); ENDDO
+      VAR(54)=IPER
 
 !-- CONTROL ON VAR AND ART --------------------------------------------
 
