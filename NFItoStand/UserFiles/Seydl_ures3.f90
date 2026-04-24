@@ -180,7 +180,7 @@
       REAL*4 OUT(4)
       INTEGER :: ITS
       REAL :: mmin(3),tmin(3)
-      DATA mmin/5.,5.,5./, tmin/8.,8.,8./ ! minsta massavedsdiameter och timmerdiameter
+      DATA mmin/5.,5.,5./, tmin/12.,12.,18./ ! minsta massavedsdiameter och timmerdiameter
 
 5     OUT(:) =0.0
 	  ITS = min(I,3)

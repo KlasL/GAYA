@@ -48,7 +48,7 @@ INTEGER :: i,j,k
 REAL :: ta,tb,tused
 CHARACTER (LEN=11) :: com2(33)*11
 CHARACTER (LEN=363) :: comm*363
-CHARACTER (LEN=155) :: cvar
+CHARACTER (LEN=161) :: cvar
 CHARACTER (LEN=23) :: catg
 CHARACTER (LEN=20) :: ctrt,chin*256,ch*10000,namn*256,ctemp*10
 
@@ -80,7 +80,7 @@ DATA cvar( 1: 30)/'TA TT TP TF ST BA VO DI HE X1 '/		! BEST
 DATA cvar(31: 60)/'X2 X3 X4 SP SS SD LS X5 X6 X7 '/		! BEST
 DATA cvar(61: 96)/'B1 B2 B3 B4 B5 B6 B7 B8 B9 B0 BB BC '/		! BEST
 DATA cvar(97:138)/'I1 I2 I3 LC FT PE DH MO ZO I4 I5 DS RS CC '/ 	! IFIX
-DATA cvar(133:155)/'F1 F2 LT AS TS SI F3 PR'/	! FIX + Period
+DATA cvar(139:161)/'F1 F2 LT AS TS SI F3 PR'/	! FIX + Period
 DATA nritot,nrotot,LOG,tused/4*0/
 
 !-- INITIERING

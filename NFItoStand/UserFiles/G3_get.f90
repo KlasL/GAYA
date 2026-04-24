@@ -5,26 +5,29 @@
     SAVE
 
     INTEGER, PARAMETER :: maxNFI=100000		! Max no. of NFI plots
-    character ::    NFI_NFIid(maxNFI)*13
-    real ::    NFI_Lat(maxNFI)
-    real ::    NFI_ASL(maxNFI)
-    integer ::    NFI_LocCli(maxNFI)
-    integer ::    NFI_Ftype(maxNFI)
-    real ::     NFI_Tsum(maxNFI)
-    integer ::    NFI_Peat(maxNFI)
-    integer ::    NFI_Ditch(maxNFI)
-    integer ::    NFI_Moist(maxNFI)
-    integer ::    NFI_Zone(maxNFI)
-    real ::    NFI_SI(maxNFI)
-    real    ::  NFI_mToRoad(maxNFI)
-    integer ::    NFI_Slope(maxNFI)
-    integer ::    NFI_Owner(maxNFI)
-    integer ::    NFI_Hkl(maxNFI)
-    real ::    NFI_Stems(MXSPECI,maxNFI)
-    real ::    NFI_BA(MXSPECI,maxNFI)
-    real ::    NFI_Height(MXSPECI,maxNFI) 
-    real ::    NFI_Age(MXSPECI,maxNFI)
-    real ::    NFI_Volume(MXSPECI,maxNFI)
+    character ::    NFI_NFIid(maxNFI)*14
+    real ::         NFI_Lat(maxNFI)
+    real ::         NFI_ASL(maxNFI)
+    integer ::      NFI_LocCli(maxNFI)
+    integer ::      NFI_Ftype(maxNFI)
+    real ::         NFI_Tsum(maxNFI)
+    integer ::      NFI_Peat(maxNFI)
+    integer ::      NFI_Ditch(maxNFI)
+    integer ::      NFI_Moist(maxNFI)
+    integer ::      NFI_Zone(maxNFI)
+    real ::         NFI_SI(maxNFI)
+    real ::         NFI_DeadWood(maxNFI)
+    real    ::      NFI_mToRoad(maxNFI)
+    integer ::      NFI_Slope(maxNFI)
+    character ::    NFI_Owner(maxNFI)*10
+    integer ::      NFI_Hkl(maxNFI)
+    integer ::      NFI_DominantSp(maxNFI)
+    integer ::      NFI_RegenerationSp(maxNFI)
+    real ::         NFI_Stems(MXSPECI,maxNFI)
+    real ::         NFI_BA(MXSPECI,maxNFI)
+    real ::         NFI_Height(MXSPECI,maxNFI) 
+    real ::         NFI_Age(MXSPECI,maxNFI)
+    real ::         NFI_Volume(MXSPECI,maxNFI)
 
     END MODULE
     !----------------------------------------------------------------------
@@ -71,7 +74,7 @@ LOGICAL	:: Start,Hugin,Brandel
 DATA NoOfSpecies/10/,Start/.true./,hd/7./,Hugin/.false./,Brandel/.false./                ! Övre höjd for inväxning (se RTVX)
 data treatmentAgeAtStart/-99./
 character :: mode*20
-data mode/'NFI'/  ! Set to 'NFI' when running with NFI data and 'Stand' when with segment data
+data mode/'Stand'/  ! Set to 'NFI' when running with NFI data and 'Stand' when with segment data
 ! Dummy inläsning
        real :: x
        integer :: ix
@@ -92,10 +95,6 @@ data mode/'NFI'/  ! Set to 'NFI' when running with NFI data and 'Stand' when wit
  		do while(Start)
             read(68,*,end=5) &
       	    NFI_NFIid(NoNFI), &	! Beståndsnummer
-     	    x, &		! Class
-            x, &				! Random number to select for test runs
-            x, &   		! Area
-            x,x, &
      	    NFI_Lat(NoNFI), &			! breddgrad (o)
      	    NFI_ASL(NoNFI), &			! hÖ”jd ”ver havet (m)
      	    NFI_LocCli(NoNFI), & 		! omr†lokalklimatiskt de(=0)
@@ -111,13 +110,13 @@ data mode/'NFI'/  ! Set to 'NFI' when running with NFI data and 'Stand' when wit
      	    NFI_Ditch(NoNFI), &
      	    NFI_Moist(NoNFI), &		! Markfuktighet: 1 = Torr 2 = Frisk 3 = Frisk-fuktig 4 = Fukti
      	    NFI_Zone(NoNFI), &		! geografisk zon (1= n:a Sv, 2= m:a Sv, 3= s:a Sv)
-            x,x,x, &
     	    NFI_SI(NoNFI), &
-            NFI_mToRoad(NoNFI), &		! stand/plot metres from road
             NFI_Slope(NoNFI), &		! code for slope
             NFI_Owner(NoNFI), &			! code for owner
             NFI_Hkl(NoNFI), &				! Huggningsklass
-            x,x, &
+            NFI_DeadWood(NoNFI), &
+            NFI_DominantSp(NoNFI), &
+            NFI_RegenerationSp(NoNFI), &
     	    (NFI_Stems(i,NoNFI), i=1,NoOfSpecies), & ! Stems >= 5 cm
      	    (NFI_BA(i,NoNFI), i=1,NoOfSpecies), & ! Basal area (m2)
      	    (NFI_Height(i,NoNFI), i=1,NoOfSpecies), & ! Height (m)
@@ -227,8 +226,8 @@ data mode/'NFI'/  ! Set to 'NFI' when running with NFI data and 'Stand' when wit
 !-- New forest --------------------------------------------------------------
     elseif(.not.OLDFOR)then
 ! Pine,Spruce,Birch,Aspen,Oak,Beech,SouthBrl,Contorta,OtherBrl,Larch <-- NB Bara tax/Heurekas arter
-      	 READ(NR,*,END=99) NewFor, &
-! Stems ha-1
+      	 READ(NR,*,END=99) NewFor, c, x, FNcost(NewFor), &
+!! Stems ha-1
         FNART(Ns,Pine,NewFor),FNART(Ns,Spruce,NewFor),FNART(Ns,Birch,NewFor),FNART(Ns,Aspen,NewFor), &
         FNART(Ns,Oak,NewFor),FNART(Ns,Beech,NewFor),FNART(Ns,SouthBrl,NewFor),FNART(Ns,Contorta,NewFor),&
         FNART(Ns,OtherBrl,NewFor),FNART(Ns,Larch,NewFor),FNART(Ns,HybAsp,NewFor),FNART(Ns,Poppel,NewFor), &
@@ -307,23 +306,33 @@ data mode/'NFI'/  ! Set to 'NFI' when running with NFI data and 'Stand' when wit
     INTEGER :: NR,NoNFI,Hkl,ierr,iend
     ! For stand data    
         integer      :: NoSt, &
-                        St_Parcel, &
+                        St_Municipality, &
+                        St_NVKprob, &
                         St_SoilMoist, &
                         St_Edge, &
                         St_Peat, &
-                        St_Domain, &
+                        St_Alpine, &
+                        St_County, &
+                        St_NatureProb, &
                         i,j,k
         real         :: &
+                        St_ParcelArea, &
+                        St_UrbanDist, &
+                        St_Ecenter, &
+                        St_Ncenter, &
                         St_Area, &
                         St_Altitude, &
                         St_Latitude, &
                         St_Slope, &
-                        St_TerrTrpDistance
+                        St_mToRoad
         character    :: cin*600, &
                         cin2(40)*20, &
-                        St_Stand*10, &
+                        St_OwnerId, &
+                        St_Parcel*10, &
+                        St_StandId*10, &
                         St_TerrTrpStatus*10,&
-                        St_PlotID*13
+                        St_NatureProt, &
+                        St_PlotId*14
     ! Dummy inläsning
        real :: x
        integer :: ix
@@ -344,57 +353,54 @@ data mode/'NFI'/  ! Set to 'NFI' when running with NFI data and 'Stand' when wit
         i = i+1
 		        enddo
     cin2(i)=cin(j:j+k-2)
-    read(cin2(1),*)	   St_Parcel
-    read(cin2(2),*)    St_Stand
-    read(cin2(3),*)    St_PlotID
-    read(cin2(4),*)    St_Area
-    read(cin2(5),*)    x
-    read(cin2(6),*)    x
-    read(cin2(7),*)    c
-    read(cin2(8),*)    St_Peat
-    read(cin2(9),*)    ix
-    read(cin2(10),*)   St_SoilMoist
-    read(cin2(11),*)   St_Edge
-    read(cin2(12),*)   St_Altitude
-    read(cin2(13),*)   St_Latitude
-    read(cin2(14),*)   ix
-    read(cin2(15),*)   St_Slope
-    read(cin2(16),*)   St_TerrTrpDistance
-    read(cin2(17),*)   St_TerrTrpStatus
-    read(cin2(18),*)   St_Domain
-
+    read(cin2(1),*)    St_Parcel
+    read(cin2(2),*)    St_StandId
+    read(cin2(3),*)    St_PlotId
+    read(cin2(4),*)    St_ParcelArea
+    read(cin2(5),*)    St_County
+    read(cin2(6),*)    St_UrbanDist
+    read(cin2(7),*)    St_Alpine
+    read(cin2(8),*)    St_Municipality
+    read(cin2(9),*)    St_OwnerId
+    read(cin2(10),*)   St_Area
+    read(cin2(11),*)   St_Ecenter
+    read(cin2(12),*)   St_Ncenter
+    read(cin2(13),*)   St_NatureProt
+    read(cin2(14),*)   St_Peat
+    read(cin2(15),*)   St_SoilMoist
+    read(cin2(16),*)   St_Edge
+    read(cin2(17),*)   St_Altitude
+    read(cin2(18),*)   St_Latitude
+    read(cin2(19),*)   St_Slope
+    read(cin2(20),*)   St_NVKprob
+    read(cin2(21),*)   St_mToRoad
+    read(cin2(22),*)   St_TerrTrpStatus
+    
     !-- Transfer NFI data from storage to active plot -----------------------------
     j = 1
     do while(j < NoNFI)
         if( NFI_NFIid(j) == St_PlotID ) go to 10
         j = j +1
     enddo
-    write(*,'(a)') '*** Error in G3GET: No NFI plot found'
+    write(*,'(2a)') '*** Error in G3GET: No NFI plot found for link to NFI ', St_PlotID 
     ierr = 1
     RETURN
-    10      CFIX(StandID) = St_Stand
+    10      CFIX(StandID) = St_StandId
     FIX(Lat) = St_Latitude
     FIX(ASL) = St_Altitude
-    if(St_TerrTrpStatus == 'OK')then
-        FIX(mToRoad) = St_TerrTrpDistance
-    else
-       FIX(mToRoad) =  2000.		! Far from road or small
-    endif
-    IFIX(Domain) = St_Domain
+    FIX(mToRoad) = St_mToRoad
+    IFIX(Domain) = 0
     IFIX(LocCli) = NFI_LocCli(j)
     IFIX(Ftype) = NFI_Ftype(j)
     FIX(Tsum) = NFI_Tsum(j)
-    if(St_Peat)then
-       IFIX(Peat) = 1
-    else
-       IFIX(Peat) = 0
-    endif
+    IFIX(Peat) = St_Peat
     IFIX(Ditch) = NFI_Ditch(j)
-    IFIX(Moist) = NFI_Moist(j)
+    IFIX(Moist) = St_SoilMoist
     IFIX(Zone) = NFI_Zone(j)
     FIX(SI) = NFI_SI(j)
     FIX(Slope) = St_Slope
-    IFIX(Owner) = NFI_Owner(j)
+    CFIX(Owner) = St_OwnerId
+    FIX(DeadWood) = NFI_DeadWood(j)
     Hkl = NFI_Hkl(j)
     ARTin(Ns,:,1) = NFI_Stems(:,j)
     ARTin(Gs,:,1) = NFI_BA(:,j)
@@ -454,7 +460,7 @@ data mode/'NFI'/  ! Set to 'NFI' when running with NFI data and 'Stand' when wit
      	    IFIX(Zone) = NFI_Zone(j)		! geografisk zon (1= n:a Sv, 2= m:a Sv, 3= s:a Sv)
             FIX(mToRoad) = NFI_mToRoad(j)   ! stand/plot metres from road
             FIX(Slope) = NFI_Slope(j)		! code for slope
-            IFIX(Owner) = NFI_Owner(j)			! code for owner
+            CFIX(Owner) = NFI_Owner(j)			! code for owner
             Hkl = NFI_Hkl(j)		        ! Huggningsklass
             ARTin(Ns,:,1) = NFI_Stems(:,j)
             ARTin(Gs,:,1) = NFI_BA(:,j)

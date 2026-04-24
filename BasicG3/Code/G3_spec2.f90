@@ -175,9 +175,9 @@ DATA    StandID,Domain,Sapling,LocCli,Ftype,Peat,Ditch,Moist,Zone,CCscenario,Own
         DominSp,RegenSp,CutClass &
 	/1,2,3,4,5,6,7,8,9,10,11,12,13,14/
 ! FIX
-INTEGER ::		Area,Spar,Lat,ASL,Tsum,SI,mToRoad,Slope								
-DATA Area,Spar,Lat,ASL,Tsum,SI,mToRoad,Slope	&
-	/1,2,3,4,5,6,7,8/
+INTEGER ::		Area,Spar,Lat,ASL,Tsum,SI,mToRoad,Slope,DeadWood								
+DATA Area,Spar,Lat,ASL,Tsum,SI,mToRoad,Slope,DeadWood	&
+	/1,2,3,4,5,6,7,8,9/
 
 INTEGER ::  &               ! BEST
 	TotAge,		& ! 1
