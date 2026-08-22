@@ -1,0 +1,14 @@
+# Ignore everything
+*
+
+# Don't ignore .gitignore itself
+!.gitignore
+
+# Don't ignore .f90, .for and .vfproj files in any folder
+!**/*.f90
+!**/*.for
+!**/*.vfproj
+
+# Ignore build output folders
+bin/
+obj/
